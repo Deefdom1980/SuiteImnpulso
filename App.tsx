@@ -18,7 +18,13 @@ import {
   ChevronUp,
   MousePointer2,
   Sparkles,
-  Layers
+  Layers,
+  X,
+  Building2,
+  Phone,
+  User,
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -80,43 +86,224 @@ const FloatingDecor = ({ icon: Icon, top, left, delay = "0s", size = 32, opacity
 
 const AnimatedSeparator = () => (
   <div className="relative w-full py-12 flex items-center justify-center overflow-hidden">
-    {/* Line Left */}
     <div className="flex-1 h-[1px] bg-gradient-to-l from-orange-500/50 via-orange-500/10 to-transparent"></div>
-    
-    {/* Central Icon Container */}
     <div className="relative mx-8 group">
       <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-xl group-hover:bg-orange-500/40 transition-all duration-700 animate-pulse"></div>
       <div className="relative bg-[#030408] border border-orange-500/30 p-4 rounded-2xl group-hover:rotate-[360deg] transition-all duration-[1500ms] ease-in-out shadow-[0_0_30px_rgba(249,115,22,0.2)]">
         <Zap className="w-8 h-8 text-orange-500 fill-orange-500/10" />
       </div>
-      
-      {/* Orbital Particles */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border border-white/5 rounded-full animate-[spin_10s_linear_infinite]">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-orange-400 rounded-full shadow-[0_0_10px_#f97316]"></div>
       </div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border border-white/5 rounded-full animate-[spin_15s_linear_infinite_reverse]">
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-400 rounded-full shadow-[0_0_10px_#a855f7]"></div>
-      </div>
     </div>
-
-    {/* Line Right */}
     <div className="flex-1 h-[1px] bg-gradient-to-r from-orange-500/50 via-orange-500/10 to-transparent"></div>
-    
-    {/* Scanning Light Beam */}
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       <div className="absolute top-1/2 left-0 w-40 h-[2px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent -translate-y-1/2 animate-[scan_4s_linear_infinite]"></div>
     </div>
-
-    <style>{`
-      @keyframes scan {
-        0% { left: -20%; opacity: 0; }
-        20% { opacity: 1; }
-        80% { opacity: 1; }
-        100% { left: 120%; opacity: 0; }
-      }
-    `}</style>
   </div>
 );
+
+// --- Booking Modal Component ---
+
+const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [step, setStep] = useState<'form' | 'loading' | 'success' | 'error'>('form');
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellidos: '',
+    empresa: '',
+    email: '',
+    telefono: ''
+  });
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep('loading');
+
+    try {
+      // AQUÍ PEGAS TU URL DE FORMSPREE O WEBHOOK CUANDO LA TENGAS
+      // const FORMSPREE_URL = "https://formspree.io/f/TU_ID_AQUI";
+      
+      // Por ahora simulamos el envío para que veas el flujo:
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      /* 
+      // Código real para el envío:
+      const response = await fetch("https://formspree.io/f/XXXXX", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) setStep('success'); else setStep('error');
+      */
+      
+      setStep('success');
+    } catch (error) {
+      console.error("Error enviando formulario:", error);
+      setStep('error');
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose}></div>
+      <div className="glass-card w-full max-w-xl rounded-[3rem] border-white/10 shadow-2xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 animate-gradient-x"></div>
+        
+        <button onClick={onClose} className="absolute top-6 right-6 p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white z-20">
+          <X className="w-6 h-6" />
+        </button>
+
+        <div className="p-8 md:p-12">
+          {step === 'form' && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <h3 className="text-3xl font-black mb-2 tracking-tight">DATOS DE <span className="gradient-text">CONTACTO</span></h3>
+              <p className="text-gray-400 font-medium mb-8 text-sm">Rellena tus datos para recibir el enlace de la videollamada.</p>
+              
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="group relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="Nombre" 
+                      className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
+                      value={formData.nombre}
+                      onChange={(e) => setFormData({...formData, nombre: e.target.value})}
+                    />
+                  </div>
+                  <div className="group relative">
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="Apellidos" 
+                      className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 px-5 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
+                      value={formData.apellidos}
+                      onChange={(e) => setFormData({...formData, apellidos: e.target.value})}
+                    />
+                  </div>
+                </div>
+                
+                <div className="group relative">
+                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
+                  <input 
+                    required
+                    type="text" 
+                    placeholder="Empresa / Proyecto" 
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
+                    value={formData.empresa}
+                    onChange={(e) => setFormData({...formData, empresa: e.target.value})}
+                  />
+                </div>
+
+                <div className="group relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
+                  <input 
+                    required
+                    type="email" 
+                    placeholder="Email profesional" 
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  />
+                </div>
+
+                <div className="group relative">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
+                  <input 
+                    required
+                    type="tel" 
+                    placeholder="Teléfono (WhatsApp)" 
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
+                    value={formData.telefono}
+                    onChange={(e) => setFormData({...formData, telefono: e.target.value})}
+                  />
+                </div>
+
+                <button type="submit" className="w-full gradient-bg btn-shine py-5 rounded-2xl font-black text-lg text-white shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4">
+                  ACCEDER A LA AGENDA <ArrowRight className="w-5 h-5" />
+                </button>
+              </form>
+            </div>
+          )}
+
+          {step === 'loading' && (
+            <div className="py-20 flex flex-col items-center justify-center animate-in fade-in duration-500">
+              <div className="relative">
+                <div className="w-20 h-20 rounded-full border-2 border-orange-500/20 border-t-orange-500 animate-spin"></div>
+                <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-orange-500 animate-pulse" />
+              </div>
+              <p className="text-xl font-bold text-white mt-8 tracking-tight uppercase">Procesando solicitud...</p>
+            </div>
+          )}
+
+          {step === 'success' && (
+            <div className="text-center py-10 animate-in zoom-in-95 duration-500">
+              <div className="w-24 h-24 bg-green-500/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-green-500/20 shadow-[0_0_50px_rgba(34,197,94,0.1)]">
+                <CheckCircle2 className="w-12 h-12 text-green-500" />
+              </div>
+              <h3 className="text-3xl font-black mb-4 tracking-tight uppercase">¡DATOS RECIBIDOS!</h3>
+              <p className="text-gray-400 font-medium mb-10 leading-relaxed text-lg">
+                Perfecto, <span className="text-white font-bold">{formData.nombre}</span>. Ya puedes elegir el día y la hora para nuestra videollamada.
+              </p>
+              <a 
+                href="https://calendly.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-4 bg-white text-black px-10 py-6 rounded-2xl font-black text-xl hover:bg-orange-500 hover:text-white transition-all hover:scale-105 active:scale-95 shadow-2xl group"
+              >
+                ELEGIR DÍA Y HORA <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+              </a>
+            </div>
+          )}
+
+          {step === 'error' && (
+            <div className="text-center py-10 animate-in zoom-in-95 duration-500">
+              <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-red-500/30">
+                <X className="w-10 h-10 text-red-500" />
+              </div>
+              <h3 className="text-2xl font-black mb-4 tracking-tight">ALGO HA FALLADO</h3>
+              <p className="text-gray-400 font-medium mb-10">
+                No pudimos procesar tus datos. Por favor, inténtalo de nuevo o contacta directamente con nosotros.
+              </p>
+              <button 
+                onClick={() => setStep('form')}
+                className="text-orange-500 font-black uppercase tracking-widest text-sm hover:underline"
+              >
+                Volver a intentar
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- Legal Modal Component ---
+
+const LegalModal = ({ isOpen, onClose, title, content }: { isOpen: boolean, onClose: () => void, title: string, content: React.ReactNode }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 md:p-12 animate-in fade-in duration-300">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose}></div>
+      <div className="glass-card w-full max-w-3xl max-h-[80vh] overflow-hidden flex flex-col rounded-[2.5rem] border-white/10 shadow-2xl relative z-10 animate-in zoom-in-95 duration-300">
+        <div className="p-8 border-b border-white/10 flex justify-between items-center sticky top-0 bg-[#030408]/40 backdrop-blur-xl z-20">
+          <h3 className="text-2xl font-black gradient-text tracking-tight uppercase">{title}</h3>
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="p-8 md:p-12 overflow-y-auto custom-scrollbar prose prose-invert max-w-none text-gray-400 font-medium leading-relaxed">
+          {content}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --- Reveal Component ---
 
@@ -191,7 +378,7 @@ const SectionTitle = ({ subtitle, title, centered = true }: { subtitle?: string,
   </div>
 );
 
-const Navbar = () => {
+const Navbar = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   const scrollY = useScrollY();
   const isScrolled = scrollY > 50;
 
@@ -199,7 +386,7 @@ const Navbar = () => {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${isScrolled ? 'bg-[#030408]/70 backdrop-blur-xl py-3 border-b border-white/5 shadow-2xl' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
         <div className="flex flex-col items-start">
-          <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <div className="gradient-bg p-1.5 rounded-lg group-hover:rotate-12 transition-transform duration-500 shadow-lg shadow-orange-500/10">
               <Zap className="w-5 h-5 text-white" />
             </div>
@@ -225,15 +412,18 @@ const Navbar = () => {
           ))}
         </div>
 
-        <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine hover:scale-105 transition-all px-7 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest text-white shadow-xl shadow-orange-500/10 active:scale-95 inline-block text-center">
-          Reservar Auditoría
-        </a>
+        <button 
+          onClick={onOpenBooking}
+          className="gradient-bg btn-shine hover:scale-105 transition-all px-7 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest text-white shadow-xl shadow-orange-500/10 active:scale-95 inline-block text-center"
+        >
+          AUDITORIA
+        </button>
       </div>
     </nav>
   );
 };
 
-const Hero = () => {
+const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   return (
     <section className="relative pt-32 pb-20 px-6 min-h-[90vh] flex items-center justify-center overflow-hidden">
       <FloatingDecor icon={Sparkles} top="15%" left="12%" delay="0s" size={36} />
@@ -267,9 +457,12 @@ const Hero = () => {
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center sm:items-stretch mb-20">
           <Reveal delay={700} direction="up" className="w-full sm:w-auto">
-            <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine w-full sm:w-auto px-12 py-5 rounded-[1.2rem] font-black text-lg flex items-center justify-center gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/40 transition-all active:scale-95 group text-white text-center">
+            <button 
+              onClick={onOpenBooking}
+              className="gradient-bg btn-shine w-full sm:w-auto px-12 py-5 rounded-[1.2rem] font-black text-lg flex items-center justify-center gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/40 transition-all active:scale-95 group text-white text-center"
+            >
               Reservar Auditoría <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </button>
           </Reveal>
         </div>
 
@@ -328,7 +521,49 @@ const DemoSection = () => {
   );
 };
 
-const Services = () => {
+const Process = () => {
+  const steps = [
+    { id: "01", title: "Auditoría", desc: "Analizamos tu situación actual y detectamos fugas de ventas.", icon: <MessageSquare /> },
+    { id: "02", title: "Estrategia", desc: "Diseñamos un plan de acción a medida de tus objetivos.", icon: <Lightbulb /> },
+    { id: "03", title: "Creación", desc: "Producimos contenido premium listo para impactar.", icon: <Rocket /> },
+    { id: "04", title: "Escalado", desc: "Optimizamos resultados para multiplicar tu facturación.", icon: <BarChart3 /> }
+  ];
+
+  return (
+    <section id="proceso" className="py-20 px-6 relative">
+      <div className="max-w-7xl mx-auto relative z-10">
+        <SectionTitle 
+          subtitle="Metodología"
+          title={<><span className="gradient-text">4</span> pasos hacia el <span className="gradient-text">éxito</span></>}
+        />
+        <div className="relative mt-16">
+          <div className="hidden lg:block absolute top-16 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+            {steps.map((s, i) => (
+              <Reveal key={i} delay={i * 200} direction="up">
+                <div className="relative text-center flex flex-col items-center group">
+                  <div className="relative mb-8">
+                    <div className="w-28 h-28 rounded-[2rem] bg-white/[0.03] border border-white/10 flex items-center justify-center z-10 relative group-hover:scale-110 group-hover:border-orange-500/50 group-hover:rotate-6 transition-all duration-700 shadow-2xl overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      {React.cloneElement(s.icon as React.ReactElement, { className: "w-10 h-10 text-orange-500 transition-transform group-hover:scale-110" })}
+                    </div>
+                    <span className="absolute -top-3 -right-3 bg-gradient-to-br from-orange-500 to-purple-600 text-white text-[10px] font-black w-8 h-8 rounded-2xl flex items-center justify-center z-20 shadow-xl group-hover:scale-125 transition-transform duration-700">
+                      {s.id}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black mb-3 group-hover:text-orange-400 transition-colors tracking-tight">{s.title}</h3>
+                  <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-[240px] group-hover:text-gray-400 transition-colors">{s.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Services = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   const services = [
     { title: "Producción de Video", desc: "Reels y contenido vertical de alto impacto que domina el algoritmo.", icon: <Video className="w-6 h-6" /> },
     { title: "Diseño Estratégico", desc: "Identidad visual y piezas de contenido que proyectan autoridad.", icon: <PenTool className="w-6 h-6" /> },
@@ -355,54 +590,15 @@ const Services = () => {
                 </div>
                 <h3 className="text-2xl font-black mb-3 group-hover:text-orange-400 transition-colors tracking-tight">{s.title}</h3>
                 <p className="text-gray-400 text-base leading-relaxed font-medium group-hover:text-gray-300 transition-colors">{s.desc}</p>
-                <a href="mailto:pixel@pixelyellow.com" className="mt-6 inline-flex items-center gap-2 text-[10px] font-black text-orange-500/50 uppercase tracking-widest group-hover:text-orange-500 transition-colors cursor-pointer">
+                <button 
+                  onClick={onOpenBooking}
+                  className="mt-6 inline-flex items-center gap-2 text-[10px] font-black text-orange-500/50 uppercase tracking-widest group-hover:text-orange-500 transition-colors cursor-pointer"
+                >
                   Saber más <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </button>
               </div>
             </Reveal>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Process = () => {
-  const steps = [
-    { id: "01", title: "Auditoría", desc: "Analizamos tu situación actual y detectamos fugas de ventas.", icon: <MessageSquare /> },
-    { id: "02", title: "Estrategia", desc: "Diseñamos un plan de acción a medida de tus objetivos.", icon: <Lightbulb /> },
-    { id: "03", title: "Creación", desc: "Producimos contenido premium listo para impactar.", icon: <Rocket /> },
-    { id: "04", title: "Escalado", desc: "Optimizamos resultados para multiplicar tu facturación.", icon: <BarChart3 /> }
-  ];
-
-  return (
-    <section id="proceso" className="py-20 px-6 relative">
-      <div className="max-w-7xl mx-auto relative z-10">
-        <SectionTitle 
-          subtitle="Metodología"
-          title={<>Nuestro camino al <span className="gradient-text">éxito</span></>}
-        />
-        <div className="relative mt-16">
-          <div className="hidden lg:block absolute top-16 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-            {steps.map((s, i) => (
-              <Reveal key={i} delay={i * 200} direction="up">
-                <div className="relative text-center flex flex-col items-center group">
-                  <div className="relative mb-8">
-                    <div className="w-28 h-28 rounded-[2rem] bg-white/[0.03] border border-white/10 flex items-center justify-center z-10 relative group-hover:scale-110 group-hover:border-orange-500/50 group-hover:rotate-6 transition-all duration-700 shadow-2xl overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                      {React.cloneElement(s.icon as React.ReactElement, { className: "w-10 h-10 text-orange-500 transition-transform group-hover:scale-110" })}
-                    </div>
-                    <span className="absolute -top-3 -right-3 bg-gradient-to-br from-orange-500 to-purple-600 text-white text-[10px] font-black w-8 h-8 rounded-2xl flex items-center justify-center z-20 shadow-xl group-hover:scale-125 transition-transform duration-700">
-                      {s.id}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-black mb-3 group-hover:text-orange-400 transition-colors tracking-tight">{s.title}</h3>
-                  <p className="text-gray-500 text-sm font-medium leading-relaxed max-w-[240px] group-hover:text-gray-400 transition-colors">{s.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </div>
     </section>
@@ -449,7 +645,7 @@ const Testimonials = () => {
   );
 };
 
-const CTASection = () => {
+const CTASection = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   return (
     <section id="contacto" className="py-20 px-6 relative">
       <div className="max-w-5xl mx-auto relative z-10">
@@ -468,9 +664,12 @@ const CTASection = () => {
                 </p>
               </Reveal>
               <Reveal delay={600} direction="up" className="flex justify-center">
-                <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine px-14 py-6 rounded-[1.5rem] font-extrabold text-xl flex items-center justify-center gap-4 mx-auto hover:scale-105 transition-all shadow-2xl shadow-orange-500/30 active:scale-95 group text-white text-center">
+                <button 
+                  onClick={onOpenBooking}
+                  className="gradient-bg btn-shine px-14 py-6 rounded-[1.5rem] font-extrabold text-xl flex items-center justify-center gap-4 mx-auto hover:scale-105 transition-all shadow-2xl shadow-orange-500/30 active:scale-95 group text-white text-center"
+                >
                   Reservar Auditoría <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform" />
-                </a>
+                </button>
               </Reveal>
             </div>
           </div>
@@ -480,17 +679,61 @@ const CTASection = () => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   const scrollY = useScrollY();
   const showScroll = scrollY > 400;
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+
+  const legalContent = {
+    privacidad: (
+      <div className="space-y-6">
+        <p>En <strong>Suite Impulso</strong>, operado bajo la marca creativa <strong>Pixel Yellow</strong>, nos tomamos muy en serio la protección de tus datos personales.</p>
+        <h4 className="text-white font-bold">1. Responsable del Tratamiento</h4>
+        <p>El responsable del tratamiento de los datos recogidos a través de este sitio web es Pixel Yellow, con email de contacto pixel@pixelyellow.com.</p>
+        <h4 className="text-white font-bold">2. Finalidad de la recogida</h4>
+        <p>Los datos (nombre y correo electrónico) facilitados por el usuario mediante el envío de correos electrónicos o formularios se utilizarán exclusivamente para gestionar su solicitud de auditoría o información sobre nuestros servicios.</p>
+        <h4 className="text-white font-bold">3. Legitimación</h4>
+        <p>La base legal para el tratamiento de tus datos es el consentimiento explícito del usuario al contactarnos de forma voluntaria.</p>
+        <h4 className="text-white font-bold">4. Tus derechos</h4>
+        <p>Puedes ejercer tus derechos de acceso, rectificación, supresión y oposición en cualquier momento enviando un correo a pixel@pixelyellow.com.</p>
+      </div>
+    ),
+    terminos: (
+      <div className="space-y-6">
+        <p>El acceso y uso de la web de <strong>Suite Impulso</strong> atribuye la condición de usuario e implica la aceptación total de los siguientes términos:</p>
+        <h4 className="text-white font-bold">1. Servicios</h4>
+        <p>Suite Impulso ofrece servicios de consultoría estratégica, producción audiovisual y diseño de embudos de venta. Las condiciones específicas de cada proyecto se detallarán en presupuestos independientes.</p>
+        <h4 className="text-white font-bold">2. Propiedad Intelectual</h4>
+        <p>Todos los contenidos de esta web (textos, gráficos, logotipos, vídeos) son propiedad de Pixel Yellow o cuentan con las licencias correspondientes. Queda prohibida su reproducción sin autorización previa.</p>
+        <h4 className="text-white font-bold">3. Responsabilidad</h4>
+        <p>Suite Impulso no se hace responsable de las interrupciones técnicas del sitio o del uso que terceros puedan hacer de la información aquí contenida.</p>
+        <h4 className="text-white font-bold">4. Jurisdicción</h4>
+        <p>Cualquier controversia relacionada con este sitio web se someterá a los tribunales del domicilio del propietario de la marca.</p>
+      </div>
+    ),
+    cookies: (
+      <div className="space-y-6">
+        <p>Utilizamos cookies para mejorar tu experiencia de navegación en Suite Impulso.</p>
+        <h4 className="text-white font-bold">1. ¿Qué son las cookies?</h4>
+        <p>Son pequeños archivos de texto que se almacenan en tu navegador cuando visitas nuestra web.</p>
+        <h4 className="text-white font-bold">2. Tipos de cookies que usamos</h4>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>Técnicas:</strong> Necesarias para el funcionamiento básico de la web y la navegación fluida.</li>
+          <li><strong>Analíticas:</strong> Nos permiten entender cómo los usuarios interactúan con la web (Google Analytics de forma anónima).</li>
+        </ul>
+        <h4 className="text-white font-bold">3. Cómo gestionar las cookies</h4>
+        <p>Puedes desactivar o borrar las cookies desde la configuración de tu navegador en cualquier momento. Ten en cuenta que esto podría afectar a algunas funcionalidades del sitio.</p>
+      </div>
+    )
+  };
 
   return (
     <footer className="pt-20 pb-12 px-8 border-t border-white/5 relative overflow-hidden bg-transparent">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 mb-16 relative z-10">
         <div className="col-span-1 md:col-span-2 flex flex-col items-center md:items-start text-center md:text-left">
           <Reveal direction="right" delay={100}>
-            <div className="flex items-center gap-4 mb-3 group cursor-pointer justify-center md:justify-start">
+            <div className="flex items-center gap-4 mb-3 group cursor-pointer justify-center md:justify-start" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <div className="gradient-bg p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-500 shadow-xl shadow-orange-500/10">
                 <Zap className="w-7 h-7 text-white" />
               </div>
@@ -535,12 +778,15 @@ const Footer = () => {
             <h4 className="font-black text-white text-sm mb-8 uppercase tracking-[0.3em] opacity-50">Contacto</h4>
           </Reveal>
           <Reveal direction="left" delay={300}>
-            <a href="mailto:pixel@pixelyellow.com" className="flex items-center gap-4 text-gray-400 hover:text-white transition-all group mb-8 justify-center md:justify-start">
+            <button 
+              onClick={onOpenBooking}
+              className="flex items-center gap-4 text-gray-400 hover:text-white transition-all group mb-8 justify-center md:justify-start"
+            >
               <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl group-hover:bg-orange-500/20 group-hover:border-orange-500/30 transition-all">
                 <Mail className="w-6 h-6 text-orange-500" />
               </div>
               <span className="font-black text-lg">pixel@pixelyellow.com</span>
-            </a>
+            </button>
           </Reveal>
           <Reveal direction="left" delay={400}>
             <p className="text-gray-600 text-[11px] font-black uppercase tracking-[0.2em] leading-relaxed">
@@ -555,11 +801,9 @@ const Footer = () => {
           <p className="opacity-50">© 2026 Suite Impulso. Todos los derechos reservados.</p>
         </Reveal>
         <div className="flex gap-10 opacity-50 justify-center">
-          {["Privacidad", "Términos", "Cookies"].map((item, idx) => (
-            <Reveal key={item} delay={200 + (idx * 100)} direction="up">
-              <a href="#" className="hover:text-white transition-colors">{item}</a>
-            </Reveal>
-          ))}
+          <button onClick={() => setActiveModal('privacidad')} className="hover:text-white transition-colors">Privacidad</button>
+          <button onClick={() => setActiveModal('terminos')} className="hover:text-white transition-colors">Términos</button>
+          <button onClick={() => setActiveModal('cookies')} className="hover:text-white transition-colors">Cookies</button>
         </div>
       </div>
 
@@ -569,24 +813,51 @@ const Footer = () => {
       >
         <ChevronUp className="w-6 h-6 text-white" />
       </button>
+
+      {/* Modales Legales */}
+      <LegalModal 
+        isOpen={activeModal === 'privacidad'} 
+        onClose={() => setActiveModal(null)} 
+        title="Política de Privacidad" 
+        content={legalContent.privacidad} 
+      />
+      <LegalModal 
+        isOpen={activeModal === 'terminos'} 
+        onClose={() => setActiveModal(null)} 
+        title="Términos y Condiciones" 
+        content={legalContent.terminos} 
+      />
+      <LegalModal 
+        isOpen={activeModal === 'cookies'} 
+        onClose={() => setActiveModal(null)} 
+        title="Política de Cookies" 
+        content={legalContent.cookies} 
+      />
     </footer>
   );
 };
 
 const App: React.FC = () => {
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+
   return (
     <div className="relative min-h-screen selection:bg-orange-500/30 selection:text-orange-200">
       <BackgroundDecor />
-      <Navbar />
+      <Navbar onOpenBooking={() => setIsBookingOpen(true)} />
       <div className="relative z-10">
-        <Hero />
+        <Hero onOpenBooking={() => setIsBookingOpen(true)} />
         <DemoSection />
-        <Services />
         <Process />
+        <Services onOpenBooking={() => setIsBookingOpen(true)} />
         <Testimonials />
-        <CTASection />
-        <Footer />
+        <CTASection onOpenBooking={() => setIsBookingOpen(true)} />
+        <Footer onOpenBooking={() => setIsBookingOpen(true)} />
       </div>
+      
+      <BookingModal 
+        isOpen={isBookingOpen} 
+        onClose={() => setIsBookingOpen(false)} 
+      />
     </div>
   );
 };
