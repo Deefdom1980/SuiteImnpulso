@@ -65,22 +65,29 @@ const BackgroundDecor = () => {
   const scrollY = useScrollY();
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#030408]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(20,25,40,1)_0%,rgba(3,4,8,1)_70%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(25,30,55,1)_0%,rgba(3,4,8,1)_80%)]"></div>
       <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay"></div>
       <div className="absolute inset-0 bg-grid-dots opacity-20"></div>
       <div className="absolute inset-0 bg-grid-lines opacity-[0.15] grid-mask"></div>
+      
+      {/* Luces Glow Dinámicas - Optimizadas para dar aire y color en móvil y desktop */}
       <div 
-        className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-orange-600/10 rounded-full blur-[120px] animate-glow"
-        style={{ transform: `translateY(${scrollY * 0.08}px)` }}
+        className="absolute top-[-10%] left-[-10%] w-[100%] h-[100%] bg-orange-600/10 rounded-full blur-[160px] animate-glow"
+        style={{ transform: `translateY(${scrollY * 0.05}px)` }}
       ></div>
       <div 
-        className="absolute bottom-[-20%] right-[-10%] w-[80%] h-[80%] bg-purple-600/10 rounded-full blur-[120px] animate-glow"
-        style={{ transform: `translateY(${-scrollY * 0.08}px)`, animationDelay: '-6s' }}
+        className="absolute bottom-[-10%] right-[-10%] w-[100%] h-[100%] bg-purple-600/10 rounded-full blur-[160px] animate-glow"
+        style={{ transform: `translateY(${-scrollY * 0.05}px)`, animationDelay: '-6s' }}
       ></div>
       <div 
-        className="absolute top-[35%] left-[15%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[150px] animate-glow"
+        className="absolute top-[40%] left-[25%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-[140px] animate-glow"
         style={{ animationDelay: '-3s' }}
       ></div>
+      
+      {/* Luces extra para dispositivos móviles para reducir la sensación de oscuridad total */}
+      <div className="absolute md:hidden top-[10%] right-[10%] w-40 h-40 bg-orange-500/20 rounded-full blur-[80px]"></div>
+      <div className="absolute md:hidden bottom-[20%] left-[10%] w-40 h-40 bg-purple-500/20 rounded-full blur-[80px]"></div>
+
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
     </div>
   );
@@ -549,7 +556,7 @@ const DemoSection = () => {
             ) : (
               <iframe 
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/lRTtMcx6HXY?autoplay=1&mute=1&controls=1&rel=0" 
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0&controls=1&rel=0" 
                 title="Suite Impulso Impact Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -827,7 +834,7 @@ const Footer = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
         <h4 className="text-white font-bold">1. Servicios</h4>
         <p>Suite Impulso ofrece servicios de consultoría estratégica, producción audiovisual y diseño de embudos de venta. Las condiciones específicas de cada proyecto se detallarán en presupuestos independientes.</p>
         <h4 className="text-white font-bold">2. Propiedad Intelectual</h4>
-        <p>Todos los contenidos de esta web (textos, gráficos, logotipos, vídeos) son propiedad de Pixel Yellow o cuentan con las licencias correspondientes. Queda prohibida su reproducción sin autorización previa.</p>
+        <p>Todos los contenidos de esta web (textos, graphics, logotipos, vídeos) son propiedad de Pixel Yellow o cuentan con las licencias correspondientes. Queda prohibida su reproducción sin autorización previa.</p>
         <h4 className="text-white font-bold">3. Responsabilidad</h4>
         <p>Suite Impulso no se hace responsable de las interrupciones técnicas del sitio o del uso que terceros puedan hacer de la información aquí contenida.</p>
         <h4 className="text-white font-bold">4. Jurisdicción</h4>
