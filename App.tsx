@@ -89,7 +89,14 @@ const FloatingDecor = ({ icon: Icon, top, left, delay = "0s", size = 32, opacity
 
 // --- Reveal Component Mejorado ---
 
-const Reveal = ({ children, delay = 0, className = "", direction = "up" }: { children?: React.ReactNode, delay?: number, className?: string, direction?: "up" | "down" | "left" | "right" | "none", key?: React.Key }) => {
+// Explicitly define props type and include 'key' to allow usage in mapped lists without TypeScript errors.
+const Reveal = ({ children, delay = 0, className = "", direction = "up" }: { 
+  children?: React.ReactNode, 
+  delay?: number, 
+  className?: string, 
+  direction?: "up" | "down" | "left" | "right" | "none",
+  key?: React.Key
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -208,7 +215,7 @@ const Hero = () => {
         <Reveal delay={100} direction="down">
           <div className="inline-flex items-center gap-3 glass-card px-6 py-2 rounded-full mb-8 border-white/10 hover:border-orange-500/30 cursor-default transition-all">
             <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping"></div>
-            <span className="text-[10px] md:text-xs font-bold text-orange-100 tracking-[0.2em] uppercase">Contenido que escala tu facturación</span>
+            <span className="text-[10px] md:text-xs font-bold text-orange-100 tracking-[0.2em] uppercase">ESCALA HASTA EL SIGUIENTE NIVEL</span>
           </div>
         </Reveal>
 
@@ -425,7 +432,7 @@ const CTASection = () => {
                 </p>
               </Reveal>
               <Reveal delay={600} direction="up" className="flex justify-center">
-                <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine px-14 py-6 rounded-[1.5rem] font-extrabold text-xl flex items-center justify-center gap-4 mx-auto hover:scale-105 transition-all shadow-[0_20px_60px_rgba(249,115,22,0.3)] active:scale-95 group text-white text-center">
+                <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine px-14 py-6 rounded-[1.5rem] font-extrabold text-xl flex items-center justify-center gap-4 mx-auto hover:scale-105 transition-all shadow-2xl shadow-orange-500/30 active:scale-95 group text-white text-center">
                   Reservar Auditoría <ArrowRight className="w-7 h-7 group-hover:translate-x-2 transition-transform" />
                 </a>
               </Reveal>
@@ -468,7 +475,7 @@ const Footer = () => {
           </Reveal>
 
           <Reveal direction="right" delay={200}>
-            <p className="text-gray-500 max-w-md mb-10 leading-relaxed text-xl font-medium">
+            <p className="text-gray-500 max-md mb-10 leading-relaxed text-xl font-medium">
               Contenido estratégico para ventas de alto impacto
             </p>
           </Reveal>
@@ -479,7 +486,7 @@ const Footer = () => {
             <h4 className="font-black text-white text-sm mb-8 uppercase tracking-[0.3em] opacity-50">Navegación</h4>
           </Reveal>
           <ul className="space-y-4 text-gray-400 font-bold text-base">
-            {["Servicios", "Metodología", "Clientes"].map((item, idx) => (
+            {["Servicios", "Proceso", "Testimonios"].map((item, idx) => (
               <Reveal key={item} delay={300 + (idx * 100)} direction="right">
                 <li><a href={`#${item.toLowerCase()}`} className="hover:text-orange-500 transition-colors flex items-center gap-4 group justify-center md:justify-start"><span className="hidden md:block w-0 group-hover:w-6 h-[2px] bg-orange-500 transition-all"></span>{item}</a></li>
               </Reveal>
@@ -522,7 +529,7 @@ const Footer = () => {
 
       <button 
         onClick={scrollToTop}
-        className={`fixed bottom-12 right-12 z-50 gradient-bg btn-shine p-5 rounded-2xl shadow-[0_20px_50px_rgba(249,115,22,0.4)] transition-all duration-700 ${showScroll ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-50 pointer-events-none'}`}
+        className={`fixed bottom-12 right-12 z-50 gradient-bg btn-shine p-5 rounded-2xl shadow-2xl transition-all duration-700 ${showScroll ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-50 pointer-events-none'}`}
       >
         <ChevronUp className="w-6 h-6 text-white" />
       </button>
