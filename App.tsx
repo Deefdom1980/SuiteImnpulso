@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Video, 
@@ -250,9 +249,9 @@ const Hero = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-24 border-t border-white/5 pt-12">
           {[
-            { value: "500+", label: "Marcas impulsadas" },
+            { value: "150+", label: "Marcas impulsadas" },
             { value: "5M+", label: "Alcance generado" },
-            { value: "10x", label: "ROI promedio", highlight: true }
+            { value: "2x", label: "ROI promedio", highlight: true }
           ].map((stat, idx) => (
             <Reveal key={idx} delay={900 + (idx * 150)} direction="up">
               <div className="group cursor-default">
