@@ -24,7 +24,26 @@ import {
   Phone,
   User,
   CheckCircle2,
-  Loader2
+  Loader2,
+  Globe,
+  Award,
+  ShieldCheck,
+  Cpu,
+  Coins,
+  Flame,
+  Bus,
+  ShoppingBag,
+  Music,
+  Trophy,
+  Car,
+  Droplet,
+  Globe2,
+  Landmark,
+  Mountain,
+  MapPin,
+  Store,
+  Ship,
+  Clapperboard
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -106,176 +125,66 @@ const AnimatedSeparator = () => (
 // --- Booking Modal Component ---
 
 const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-  const [step, setStep] = useState<'form' | 'loading' | 'success' | 'error'>('form');
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellidos: '',
-    empresa: '',
-    email: '',
-    telefono: ''
-  });
+  const [isLoading, setIsLoading] = useState(true);
 
   if (!isOpen) return null;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep('loading');
-
-    try {
-      // AQUÍ PEGAS TU URL DE FORMSPREE O WEBHOOK CUANDO LA TENGAS
-      // const FORMSPREE_URL = "https://formspree.io/f/TU_ID_AQUI";
-      
-      // Por ahora simulamos el envío para que veas el flujo:
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      /* 
-      // Código real para el envío:
-      const response = await fetch("https://formspree.io/f/XXXXX", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) setStep('success'); else setStep('error');
-      */
-      
-      setStep('success');
-    } catch (error) {
-      console.error("Error enviando formulario:", error);
-      setStep('error');
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose}></div>
-      <div className="glass-card w-full max-w-xl rounded-[3rem] border-white/10 shadow-2xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-300">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 animate-gradient-x"></div>
+      
+      {/* Container del Modal */}
+      <div className="glass-card w-full max-w-5xl h-[85vh] md:h-[80vh] rounded-[3rem] border-white/10 shadow-2xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col">
         
-        <button onClick={onClose} className="absolute top-6 right-6 p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white z-20">
+        {/* Barra superior estética */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 animate-gradient-x z-30"></div>
+        
+        {/* Botón Cerrar */}
+        <button 
+          onClick={onClose} 
+          className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 rounded-full transition-all text-gray-400 hover:text-white z-40 border border-white/5 hover:scale-110 active:scale-95"
+        >
           <X className="w-6 h-6" />
         </button>
 
-        <div className="p-8 md:p-12">
-          {step === 'form' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <h3 className="text-3xl font-black mb-2 tracking-tight">DATOS DE <span className="gradient-text">CONTACTO</span></h3>
-              <p className="text-gray-400 font-medium mb-8 text-sm">Rellena tus datos para recibir el enlace de la videollamada.</p>
-              
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="group relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
-                    <input 
-                      required
-                      type="text" 
-                      placeholder="Nombre" 
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
-                      value={formData.nombre}
-                      onChange={(e) => setFormData({...formData, nombre: e.target.value})}
-                    />
-                  </div>
-                  <div className="group relative">
-                    <input 
-                      required
-                      type="text" 
-                      placeholder="Apellidos" 
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 px-5 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
-                      value={formData.apellidos}
-                      onChange={(e) => setFormData({...formData, apellidos: e.target.value})}
-                    />
-                  </div>
-                </div>
-                
-                <div className="group relative">
-                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
-                  <input 
-                    required
-                    type="text" 
-                    placeholder="Empresa / Proyecto" 
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
-                    value={formData.empresa}
-                    onChange={(e) => setFormData({...formData, empresa: e.target.value})}
-                  />
-                </div>
+        {/* Header del Modal */}
+        <div className="px-8 pt-8 pb-4 border-b border-white/5 relative z-20">
+          <div className="flex flex-col">
+            <h3 className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <Zap className="w-6 h-6 text-orange-500 fill-orange-500/10" />
+              AGENDA TU <span className="gradient-text">AUDITORÍA</span>
+            </h3>
+            <p className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">Elige el momento perfecto para tu negocio</p>
+          </div>
+        </div>
 
-                <div className="group relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
-                  <input 
-                    required
-                    type="email" 
-                    placeholder="Email profesional" 
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  />
-                </div>
-
-                <div className="group relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
-                  <input 
-                    required
-                    type="tel" 
-                    placeholder="Teléfono (WhatsApp)" 
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-11 pr-4 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.05] transition-all font-medium text-sm"
-                    value={formData.telefono}
-                    onChange={(e) => setFormData({...formData, telefono: e.target.value})}
-                  />
-                </div>
-
-                <button type="submit" className="w-full gradient-bg btn-shine py-5 rounded-2xl font-black text-lg text-white shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4">
-                  ACCEDER A LA AGENDA <ArrowRight className="w-5 h-5" />
-                </button>
-              </form>
-            </div>
-          )}
-
-          {step === 'loading' && (
-            <div className="py-20 flex flex-col items-center justify-center animate-in fade-in duration-500">
+        {/* Área del Iframe */}
+        <div className="flex-1 relative bg-white/[0.01]">
+          {isLoading && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-[#030408]/50 backdrop-blur-sm">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full border-2 border-orange-500/20 border-t-orange-500 animate-spin"></div>
-                <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-orange-500 animate-pulse" />
+                <div className="w-24 h-24 rounded-full border-2 border-orange-500/10 border-t-orange-500 animate-spin"></div>
+                <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-orange-500 animate-pulse" />
               </div>
-              <p className="text-xl font-bold text-white mt-8 tracking-tight uppercase">Procesando solicitud...</p>
+              <p className="mt-8 text-xs font-black text-white tracking-[0.4em] uppercase opacity-50">Conectando Agenda...</p>
             </div>
           )}
+          
+          <iframe 
+            src="https://cal.eu/pixelyellow?embed=true"
+            title="Agenda de Suite Impulso"
+            className={`w-full h-full border-none transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+            onLoad={() => setIsLoading(false)}
+            allow="camera; microphone; autoplay; payment"
+          ></iframe>
+        </div>
 
-          {step === 'success' && (
-            <div className="text-center py-10 animate-in zoom-in-95 duration-500">
-              <div className="w-24 h-24 bg-green-500/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-green-500/20 shadow-[0_0_50px_rgba(34,197,94,0.1)]">
-                <CheckCircle2 className="w-12 h-12 text-green-500" />
-              </div>
-              <h3 className="text-3xl font-black mb-4 tracking-tight uppercase">¡DATOS RECIBIDOS!</h3>
-              <p className="text-gray-400 font-medium mb-10 leading-relaxed text-lg">
-                Perfecto, <span className="text-white font-bold">{formData.nombre}</span>. Ya puedes elegir el día y la hora para nuestra videollamada.
-              </p>
-              <a 
-                href="https://calendly.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-4 bg-white text-black px-10 py-6 rounded-2xl font-black text-xl hover:bg-orange-500 hover:text-white transition-all hover:scale-105 active:scale-95 shadow-2xl group"
-              >
-                ELEGIR DÍA Y HORA <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
-              </a>
-            </div>
-          )}
-
-          {step === 'error' && (
-            <div className="text-center py-10 animate-in zoom-in-95 duration-500">
-              <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-8 border border-red-500/30">
-                <X className="w-10 h-10 text-red-500" />
-              </div>
-              <h3 className="text-2xl font-black mb-4 tracking-tight">ALGO HA FALLADO</h3>
-              <p className="text-gray-400 font-medium mb-10">
-                No pudimos procesar tus datos. Por favor, inténtalo de nuevo o contacta directamente con nosotros.
-              </p>
-              <button 
-                onClick={() => setStep('form')}
-                className="text-orange-500 font-black uppercase tracking-widest text-sm hover:underline"
-              >
-                Volver a intentar
-              </button>
-            </div>
-          )}
+        {/* Footer del Modal (Branding) */}
+        <div className="px-8 py-4 border-t border-white/5 flex justify-between items-center text-[9px] font-black text-gray-600 uppercase tracking-widest relative z-20">
+          <span>Suite Impulso x Cal.com</span>
+          <span className="flex items-center gap-2">
+            Seguro & Encriptado <Star className="w-2 h-2 text-orange-500" />
+          </span>
         </div>
       </div>
     </div>
@@ -577,8 +486,8 @@ const Services = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
     <section id="servicios" className="py-20 px-6 relative">
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionTitle 
-          subtitle="Capacidades"
-          title={<>Servicios diseñados para <span className="gradient-text">escalar</span></>}
+          subtitle="Sistema completo"
+          title={<>Servicios incluidos en la <span className="gradient-text">Suite</span></>}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((s, i) => (
@@ -590,12 +499,6 @@ const Services = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
                 </div>
                 <h3 className="text-2xl font-black mb-3 group-hover:text-orange-400 transition-colors tracking-tight">{s.title}</h3>
                 <p className="text-gray-400 text-base leading-relaxed font-medium group-hover:text-gray-300 transition-colors">{s.desc}</p>
-                <button 
-                  onClick={onOpenBooking}
-                  className="mt-6 inline-flex items-center gap-2 text-[10px] font-black text-orange-500/50 uppercase tracking-widest group-hover:text-orange-500 transition-colors cursor-pointer"
-                >
-                  Saber más <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </button>
               </div>
             </Reveal>
           ))}
@@ -641,6 +544,91 @@ const Testimonials = () => {
           ))}
         </div>
       </div>
+    </section>
+  );
+};
+
+// --- Clients Marquee Section ---
+
+const ClientsSection = () => {
+  const clients = [
+    { name: "Guaguas Municipales", icon: <Bus className="w-5 h-5" /> },
+    { name: "Hiperdino", icon: <ShoppingBag className="w-5 h-5" /> },
+    { name: "Auditorio y Teatro de LPGC", icon: <Music className="w-5 h-5" /> },
+    { name: "Base:", icon: <Trophy className="w-5 h-5" /> },
+    { name: "Toyota", icon: <Car className="w-5 h-5" /> },
+    { name: "Fundación Acuorum", icon: <Droplet className="w-5 h-5" /> },
+    { name: "Casa África", icon: <Globe2 className="w-5 h-5" /> },
+    { name: "Gobierno de Canarias", icon: <Landmark className="w-5 h-5" /> },
+    { name: "Cabildo de Gran Canaria", icon: <Building2 className="w-5 h-5" /> },
+    { name: "Cabildo de Lanzarote", icon: <Mountain className="w-5 h-5" /> },
+    { name: "Ayuntamiento de LPGC", icon: <MapPin className="w-5 h-5" /> },
+    { name: "Ayuntamiento de Telde", icon: <Store className="w-5 h-5" /> },
+    { name: "Ayuntamiento de Puerto del Rosario", icon: <Ship className="w-5 h-5" /> },
+    { name: "Agencias y productoras", icon: <Clapperboard className="w-5 h-5" /> },
+  ];
+
+  const firstRow = [...clients.slice(0, 7), ...clients.slice(0, 7)];
+  const secondRow = [...clients.slice(7), ...clients.slice(7)];
+
+  return (
+    <section className="py-20 relative overflow-hidden bg-transparent">
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+        <Reveal delay={100} direction="up" className="flex flex-col items-center">
+           <div className="h-[1px] w-20 bg-orange-500/30 mb-8"></div>
+           <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-500 text-center">Empresas que confían en nosotros</p>
+        </Reveal>
+      </div>
+
+      <div className="flex flex-col gap-6">
+        {/* Fila 1 - Derecha a Izquierda */}
+        <div className="flex overflow-hidden group select-none">
+          <div className="flex whitespace-nowrap animate-marquee group-hover:pause-animation">
+            {firstRow.map((client, i) => (
+              <div key={i} className="flex items-center gap-4 mx-4 px-8 py-4 glass-card rounded-2xl border-white/5 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 hover:scale-105 hover:border-orange-500/20 transition-all duration-500 cursor-default">
+                <div className="text-orange-500">{client.icon}</div>
+                <span className="text-lg font-black tracking-tighter text-white uppercase">{client.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Fila 2 - Izquierda a Derecha */}
+        <div className="flex overflow-hidden group select-none">
+          <div className="flex whitespace-nowrap animate-marquee-reverse group-hover:pause-animation">
+            {secondRow.map((client, i) => (
+              <div key={i} className="flex items-center gap-4 mx-4 px-8 py-4 glass-card rounded-2xl border-white/5 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 hover:scale-105 hover:border-orange-500/20 transition-all duration-500 cursor-default">
+                <div className="text-purple-500">{client.icon}</div>
+                <span className="text-lg font-black tracking-tighter text-white uppercase">{client.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes marquee-reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-marquee {
+          animation: marquee 40s linear infinite;
+        }
+        .animate-marquee-reverse {
+          animation: marquee-reverse 45s linear infinite;
+        }
+        .pause-animation {
+          animation-play-state: paused;
+        }
+      `}</style>
+      
+      {/* Sombras laterales para difuminar entrada/salida */}
+      <div className="absolute top-0 bottom-0 left-0 w-40 bg-gradient-to-r from-[#030408] to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute top-0 bottom-0 right-0 w-40 bg-gradient-to-l from-[#030408] to-transparent z-10 pointer-events-none"></div>
     </section>
   );
 };
@@ -850,6 +838,7 @@ const App: React.FC = () => {
         <Process />
         <Services onOpenBooking={() => setIsBookingOpen(true)} />
         <Testimonials />
+        <ClientsSection />
         <CTASection onOpenBooking={() => setIsBookingOpen(true)} />
         <Footer onOpenBooking={() => setIsBookingOpen(true)} />
       </div>
