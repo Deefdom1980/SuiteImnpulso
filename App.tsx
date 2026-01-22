@@ -43,7 +43,8 @@ import {
   MapPin,
   Store,
   Ship,
-  Clapperboard
+  Clapperboard,
+  ArrowLeft
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -125,7 +126,26 @@ const AnimatedSeparator = () => (
 // --- Booking Modal Component ---
 
 const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+  const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    website: ''
+  });
+
+  useEffect(() => {
+    if (!isOpen) {
+      setStep(1);
+      setIsLoading(true);
+    }
+  }, [isOpen]);
+
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep(2);
+  };
 
   if (!isOpen) return null;
 
@@ -147,41 +167,138 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
           <X className="w-6 h-6" />
         </button>
 
+        {/* Botón Atrás (Solo en paso 2) */}
+        {step === 2 && (
+          <button 
+            onClick={() => setStep(1)} 
+            className="absolute top-6 left-6 p-3 bg-white/5 hover:bg-white/10 rounded-full transition-all text-gray-400 hover:text-white z-40 border border-white/5 flex items-center gap-2 group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-[10px] font-black uppercase pr-2">Atrás</span>
+          </button>
+        )}
+
         {/* Header del Modal */}
         <div className="px-8 pt-8 pb-4 border-b border-white/5 relative z-20">
-          <div className="flex flex-col">
+          <div className="flex flex-col items-center text-center">
             <h3 className="text-2xl font-black tracking-tight flex items-center gap-3">
               <Zap className="w-6 h-6 text-orange-500 fill-orange-500/10" />
-              AGENDA TU <span className="gradient-text">AUDITORÍA</span>
+              {step === 1 ? 'DATOS ESTRATÉGICOS' : 'AGENDA TU AUDITORÍA'}
             </h3>
-            <p className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">Elige el momento perfecto para tu negocio</p>
+            <p className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">
+              {step === 1 ? 'Cuéntanos un poco sobre tu proyecto' : 'Elige el momento perfecto para tu negocio'}
+            </p>
           </div>
         </div>
 
-        {/* Área del Iframe */}
-        <div className="flex-1 relative bg-white/[0.01]">
-          {isLoading && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-[#030408]/50 backdrop-blur-sm">
-              <div className="relative">
-                <div className="w-24 h-24 rounded-full border-2 border-orange-500/10 border-t-orange-500 animate-spin"></div>
-                <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-orange-500 animate-pulse" />
-              </div>
-              <p className="mt-8 text-xs font-black text-white tracking-[0.4em] uppercase opacity-50">Conectando Agenda...</p>
+        {/* Área de Contenido */}
+        <div className="flex-1 relative overflow-y-auto custom-scrollbar">
+          {step === 1 ? (
+            <div className="p-8 md:p-12 max-w-2xl mx-auto h-full flex flex-col justify-center">
+              <form onSubmit={handleNext} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Nombre */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Nombre Completo</label>
+                    <div className="relative group">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="Ej. Juan Pérez"
+                        className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  {/* Email */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Email Profesional</label>
+                    <div className="relative group">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
+                      <input 
+                        required
+                        type="email" 
+                        placeholder="juan@empresa.com"
+                        className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Teléfono */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Teléfono de contacto</label>
+                    <div className="relative group">
+                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
+                      <input 
+                        required
+                        type="tel" 
+                        placeholder="+34 600 000 000"
+                        className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  {/* Web / RRSS */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Web o Redes Sociales</label>
+                    <div className="relative group">
+                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="www.tuempresa.com / @usuario"
+                        className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
+                        value={formData.website}
+                        onChange={(e) => setFormData({...formData, website: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  <button 
+                    type="submit"
+                    className="w-full gradient-bg btn-shine py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all text-white shadow-xl shadow-orange-500/20"
+                  >
+                    Continuar a la Agenda <ArrowRight className="w-5 h-5" />
+                  </button>
+                  <p className="text-[9px] text-center text-gray-600 mt-4 uppercase tracking-widest font-black">Tu información está segura con nosotros</p>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="h-full relative bg-white/[0.01]">
+              {isLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-[#030408]/50 backdrop-blur-sm">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full border-2 border-orange-500/10 border-t-orange-500 animate-spin"></div>
+                    <Zap className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-orange-500 animate-pulse" />
+                  </div>
+                  <p className="mt-8 text-xs font-black text-white tracking-[0.4em] uppercase opacity-50">Conectando Agenda...</p>
+                </div>
+              )}
+              
+              <iframe 
+                src={`https://cal.eu/pixelyellow?name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}&embed=true`}
+                title="Agenda de Suite Impulso"
+                className={`w-full h-full border-none transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                onLoad={() => setIsLoading(false)}
+                allow="camera; microphone; autoplay; payment"
+              ></iframe>
             </div>
           )}
-          
-          <iframe 
-            src="https://cal.eu/pixelyellow?embed=true"
-            title="Agenda de Suite Impulso"
-            className={`w-full h-full border-none transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-            onLoad={() => setIsLoading(false)}
-            allow="camera; microphone; autoplay; payment"
-          ></iframe>
         </div>
 
         {/* Footer del Modal (Branding) */}
         <div className="px-8 py-4 border-t border-white/5 flex justify-between items-center text-[9px] font-black text-gray-600 uppercase tracking-widest relative z-20">
-          <span>Suite Impulso x Cal.com</span>
+          <span>{step === 1 ? 'Paso 1 de 2' : 'Paso 2 de 2'}</span>
           <span className="flex items-center gap-2">
             Seguro & Encriptado <Star className="w-2 h-2 text-orange-500" />
           </span>
@@ -643,7 +760,7 @@ const CTASection = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
             <div className="relative z-10">
               <Reveal delay={300}>
                 <h2 className="text-4xl md:text-7xl font-black mb-8 leading-[0.9] tracking-tighter">
-                  ¿Listo para el <br /> <span className="gradient-text transform -rotate-1 inline-block">IMPULSO</span>?
+                  Inicia el <br /> <span className="gradient-text transform -rotate-1 inline-block">IMPULSO</span>
                 </h2>
               </Reveal>
               <Reveal delay={450}>
