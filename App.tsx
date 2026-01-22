@@ -132,6 +132,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
     name: '',
     email: '',
     phone: '',
+    company: '',
     website: ''
   });
 
@@ -230,6 +231,21 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Empresa */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Nombre de la Empresa</label>
+                    <div className="relative group">
+                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="Ej. Suite Corp"
+                        className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
+                        value={formData.company}
+                        onChange={(e) => setFormData({...formData, company: e.target.value})}
+                      />
+                    </div>
+                  </div>
                   {/* Teléfono */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Teléfono de contacto</label>
@@ -245,20 +261,21 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
                       />
                     </div>
                   </div>
-                  {/* Web / RRSS */}
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Web o Redes Sociales</label>
-                    <div className="relative group">
-                      <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
-                      <input 
-                        required
-                        type="text" 
-                        placeholder="www.tuempresa.com / @usuario"
-                        className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
-                        value={formData.website}
-                        onChange={(e) => setFormData({...formData, website: e.target.value})}
-                      />
-                    </div>
+                </div>
+
+                {/* Web / RRSS */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-2">Web o Redes Sociales</label>
+                  <div className="relative group">
+                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-orange-500 transition-colors" />
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="www.tuempresa.com / @usuario"
+                      className="w-full bg-white/[0.03] border border-white/5 focus:border-orange-500/50 rounded-2xl py-4 pl-12 pr-6 outline-none text-white font-medium transition-all placeholder:text-gray-700"
+                      value={formData.website}
+                      onChange={(e) => setFormData({...formData, website: e.target.value})}
+                    />
                   </div>
                 </div>
 
@@ -286,7 +303,7 @@ const BookingModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => voi
               )}
               
               <iframe 
-                src={`https://cal.eu/pixelyellow?name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}&embed=true`}
+                src={`https://cal.eu/pixelyellow?name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}&notes=${encodeURIComponent(`Empresa: ${formData.company} | Teléfono: ${formData.phone} | Web: ${formData.website}`)}&embed=true`}
                 title="Agenda de Suite Impulso"
                 className={`w-full h-full border-none transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                 onLoad={() => setIsLoading(false)}
