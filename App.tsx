@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Video, 
@@ -17,7 +18,8 @@ import {
   ChevronUp,
   MousePointer2,
   Sparkles,
-  Layers
+  Layers,
+  TrendingUp as ChartIcon
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -38,19 +40,10 @@ const BackgroundDecor = () => {
   const scrollY = useScrollY();
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#030408]">
-      {/* 1. Gradiente Base Radial (Centro iluminado) */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(20,25,40,1)_0%,rgba(3,4,8,1)_70%)]"></div>
-
-      {/* 2. Textura de Ruido sutil */}
       <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay"></div>
-
-      {/* 3. Grid de Puntos (Suave y distribuido) */}
       <div className="absolute inset-0 bg-grid-dots opacity-20"></div>
-
-      {/* 4. Grid de Líneas con Máscara (Para dar estructura en el centro) */}
       <div className="absolute inset-0 bg-grid-lines opacity-[0.15] grid-mask"></div>
-      
-      {/* 5. Luces de Ambiente (Blobs dinámicos) */}
       <div 
         className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-orange-600/10 rounded-full blur-[120px] animate-glow"
         style={{ transform: `translateY(${scrollY * 0.08}px)` }}
@@ -63,8 +56,6 @@ const BackgroundDecor = () => {
         className="absolute top-[35%] left-[15%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[150px] animate-glow"
         style={{ animationDelay: '-3s' }}
       ></div>
-
-      {/* 6. Línea de horizonte sutil (Separación visual opcional) */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
     </div>
   );
@@ -86,9 +77,70 @@ const FloatingDecor = ({ icon: Icon, top, left, delay = "0s", size = 32, opacity
   </div>
 );
 
-// --- Reveal Component Mejorado ---
+// --- Growth Visualization ---
 
-// Explicitly define props type and include 'key' to allow usage in mapped lists without TypeScript errors.
+const GrowthVisualization = () => (
+  <div className="relative w-full max-w-lg mx-auto h-48 md:h-64 glass-card rounded-[2rem] p-8 border-white/5 overflow-hidden group">
+    <div className="absolute top-6 left-8 z-10">
+      <div className="flex items-center gap-3 mb-1">
+        <div className="p-2 bg-orange-500/10 rounded-lg">
+          <ChartIcon className="w-4 h-4 text-orange-500" />
+        </div>
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/80">Crecimiento Proyectado</span>
+      </div>
+      <div className="text-2xl font-black text-white">+240%</div>
+    </div>
+
+    <svg viewBox="0 0 400 200" className="absolute bottom-0 left-0 w-full h-full p-4 pointer-events-none">
+      <defs>
+        <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#f97316" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#a855f7" />
+        </linearGradient>
+        <linearGradient id="fillGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f97316" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      
+      {/* Area Fill */}
+      <path 
+        d="M0,180 Q50,170 100,140 T200,120 T300,60 T400,20 L400,200 L0,200 Z" 
+        fill="url(#fillGradient)"
+        className="animate-pulse"
+      />
+      
+      {/* Main Line */}
+      <path 
+        d="M0,180 Q50,170 100,140 T200,120 T300,60 T400,20" 
+        fill="none" 
+        stroke="url(#lineGradient)" 
+        strokeWidth="4"
+        strokeLinecap="round"
+        className="path-reveal"
+        style={{ 
+          strokeDasharray: 1000, 
+          strokeDashoffset: 1000,
+          animation: 'draw 3s ease-out forwards'
+        }}
+      />
+      
+      {/* Floating points */}
+      <circle cx="100" cy="140" r="4" fill="#f97316" className="animate-ping" style={{ animationDuration: '3s' }} />
+      <circle cx="300" cy="60" r="4" fill="#a855f7" className="animate-ping" style={{ animationDuration: '4s' }} />
+      <circle cx="400" cy="20" r="6" fill="#fff" className="shadow-lg shadow-white/50" />
+    </svg>
+    
+    <style>{`
+      @keyframes draw {
+        to { strokeDashoffset: 0; }
+      }
+    `}</style>
+  </div>
+);
+
+// --- Reveal Component ---
+
 const Reveal = ({ children, delay = 0, className = "", direction = "up" }: { 
   children?: React.ReactNode, 
   delay?: number, 
@@ -235,61 +287,70 @@ const Hero = () => {
         </Reveal>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center sm:items-stretch mb-20">
-          <Reveal delay={700} direction="right" className="w-full sm:w-auto">
+          <Reveal delay={700} direction="up" className="w-full sm:w-auto">
             <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine w-full sm:w-auto px-12 py-5 rounded-[1.2rem] font-black text-lg flex items-center justify-center gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/40 transition-all active:scale-95 group text-white text-center">
               Empieza Ahora <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
           </Reveal>
-          <Reveal delay={800} direction="left" className="w-full sm:w-auto">
-            <a href="https://youtu.be/dQw4w9WgXcQ?si=aevgAPNVTVpoRE8k" target="_blank" rel="noopener noreferrer" className="glass-card w-full sm:w-auto px-12 py-5 rounded-[1.2rem] font-bold text-lg flex items-center justify-center gap-3 hover:bg-white/5 active:scale-95 transition-all text-white text-center">
-              <Play className="w-5 h-5 fill-current text-orange-500" /> Ver Demo
-            </a>
-          </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-24 border-t border-white/5 pt-12">
-          {[
-            { value: "150+", label: "Marcas impulsadas" },
-            { value: "5M+", label: "Alcance generado" },
-            { value: "2x", label: "ROI promedio", highlight: true }
-          ].map((stat, idx) => (
-            <Reveal key={idx} delay={900 + (idx * 150)} direction="up">
-              <div className="group cursor-default">
-                <h3 className={`text-5xl md:text-6xl font-black mb-2 transition-transform duration-700 group-hover:scale-110 ${stat.highlight ? 'text-orange-500' : 'text-white'}`}>
-                  {stat.value}
-                </h3>
-                <p className="text-gray-500 text-[11px] font-black tracking-[0.3em] uppercase opacity-70 group-hover:opacity-100 transition-opacity">{stat.label}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        {/* Growth Graphic replaces stats */}
+        <Reveal delay={900} direction="up">
+          <div className="mt-12">
+            <GrowthVisualization />
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 };
 
-const DemoSection = () => (
-  <section className="py-20 px-6 relative">
-    <div className="max-w-6xl mx-auto relative z-10">
-      <SectionTitle title={<>Impacto visual que <span className="gradient-text">genera resultados</span></>} />
-      <Reveal delay={300} direction="none">
-        <a href="https://youtu.be/dQw4w9WgXcQ?si=aevgAPNVTVpoRE8k" target="_blank" rel="noopener noreferrer" className="block aspect-video glass-card rounded-[3rem] overflow-hidden relative group cursor-pointer border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.4)] hover:border-orange-500/40 transition-all duration-1000">
-          <img 
-            src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1200&q=90" 
-            alt="Impact Preview" 
-            className="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 group-hover:scale-105 transition-all duration-[2000ms]"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="gradient-bg w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(249,115,22,0.4)] group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-1000">
-              <Play className="w-10 h-10 md:w-16 md:h-16 text-white fill-current translate-x-1" />
-            </div>
+const DemoSection = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  return (
+    <section className="py-20 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto relative z-10">
+        <SectionTitle title={<>Impacto visual que <span className="gradient-text">genera resultados</span></>} />
+        <Reveal delay={300} direction="none">
+          <div className="glass-card rounded-[3rem] overflow-hidden relative group border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.4)] hover:border-orange-500/40 transition-all duration-1000 aspect-video">
+            {!isPlaying ? (
+              <div 
+                className="w-full h-full relative cursor-pointer" 
+                onClick={() => setIsPlaying(true)}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=1200&q=90" 
+                  alt="Impact Preview" 
+                  className="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 group-hover:opacity-60 group-hover:scale-105 transition-all duration-[2000ms]"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="gradient-bg w-24 h-24 md:w-32 md:h-32 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(249,115,22,0.4)] group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-1000">
+                    <Play className="w-10 h-10 md:w-16 md:h-16 text-white fill-current translate-x-1" />
+                  </div>
+                </div>
+                <div className="absolute bottom-10 left-10 text-left z-20">
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-500 mb-2">Caso de éxito</p>
+                  <h3 className="text-2xl font-black text-white">Escalado Exponencial 2024</h3>
+                </div>
+              </div>
+            ) : (
+              <iframe 
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0" 
+                title="Impact Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-transparent pointer-events-none"></div>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
-        </a>
-      </Reveal>
-    </div>
-  </section>
-);
+        </Reveal>
+      </div>
+    </section>
+  );
+};
 
 const Services = () => {
   const services = [
