@@ -18,8 +18,7 @@ import {
   ChevronUp,
   MousePointer2,
   Sparkles,
-  Layers,
-  TrendingUp as ChartIcon
+  Layers
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -77,63 +76,43 @@ const FloatingDecor = ({ icon: Icon, top, left, delay = "0s", size = 32, opacity
   </div>
 );
 
-// --- Growth Visualization ---
+// --- Animated Separator ---
 
-const GrowthVisualization = () => (
-  <div className="relative w-full max-w-lg mx-auto h-48 md:h-64 glass-card rounded-[2rem] p-8 border-white/5 overflow-hidden group">
-    <div className="absolute top-6 left-8 z-10">
-      <div className="flex items-center gap-3 mb-1">
-        <div className="p-2 bg-orange-500/10 rounded-lg">
-          <ChartIcon className="w-4 h-4 text-orange-500" />
-        </div>
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500/80">Crecimiento Proyectado</span>
+const AnimatedSeparator = () => (
+  <div className="relative w-full py-12 flex items-center justify-center overflow-hidden">
+    {/* Line Left */}
+    <div className="flex-1 h-[1px] bg-gradient-to-l from-orange-500/50 via-orange-500/10 to-transparent"></div>
+    
+    {/* Central Icon Container */}
+    <div className="relative mx-8 group">
+      <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-xl group-hover:bg-orange-500/40 transition-all duration-700 animate-pulse"></div>
+      <div className="relative bg-[#030408] border border-orange-500/30 p-4 rounded-2xl group-hover:rotate-[360deg] transition-all duration-[1500ms] ease-in-out shadow-[0_0_30px_rgba(249,115,22,0.2)]">
+        <Zap className="w-8 h-8 text-orange-500 fill-orange-500/10" />
       </div>
-      <div className="text-2xl font-black text-white">+240%</div>
+      
+      {/* Orbital Particles */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border border-white/5 rounded-full animate-[spin_10s_linear_infinite]">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-orange-400 rounded-full shadow-[0_0_10px_#f97316]"></div>
+      </div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border border-white/5 rounded-full animate-[spin_15s_linear_infinite_reverse]">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-purple-400 rounded-full shadow-[0_0_10px_#a855f7]"></div>
+      </div>
     </div>
 
-    <svg viewBox="0 0 400 200" className="absolute bottom-0 left-0 w-full h-full p-4 pointer-events-none">
-      <defs>
-        <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#f97316" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="#a855f7" />
-        </linearGradient>
-        <linearGradient id="fillGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f97316" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      
-      {/* Area Fill */}
-      <path 
-        d="M0,180 Q50,170 100,140 T200,120 T300,60 T400,20 L400,200 L0,200 Z" 
-        fill="url(#fillGradient)"
-        className="animate-pulse"
-      />
-      
-      {/* Main Line */}
-      <path 
-        d="M0,180 Q50,170 100,140 T200,120 T300,60 T400,20" 
-        fill="none" 
-        stroke="url(#lineGradient)" 
-        strokeWidth="4"
-        strokeLinecap="round"
-        className="path-reveal"
-        style={{ 
-          strokeDasharray: 1000, 
-          strokeDashoffset: 1000,
-          animation: 'draw 3s ease-out forwards'
-        }}
-      />
-      
-      {/* Floating points */}
-      <circle cx="100" cy="140" r="4" fill="#f97316" className="animate-ping" style={{ animationDuration: '3s' }} />
-      <circle cx="300" cy="60" r="4" fill="#a855f7" className="animate-ping" style={{ animationDuration: '4s' }} />
-      <circle cx="400" cy="20" r="6" fill="#fff" className="shadow-lg shadow-white/50" />
-    </svg>
+    {/* Line Right */}
+    <div className="flex-1 h-[1px] bg-gradient-to-r from-orange-500/50 via-orange-500/10 to-transparent"></div>
     
+    {/* Scanning Light Beam */}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute top-1/2 left-0 w-40 h-[2px] bg-gradient-to-r from-transparent via-orange-500/40 to-transparent -translate-y-1/2 animate-[scan_4s_linear_infinite]"></div>
+    </div>
+
     <style>{`
-      @keyframes draw {
-        to { strokeDashoffset: 0; }
+      @keyframes scan {
+        0% { left: -20%; opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { left: 120%; opacity: 0; }
       }
     `}</style>
   </div>
@@ -247,7 +226,7 @@ const Navbar = () => {
         </div>
 
         <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine hover:scale-105 transition-all px-7 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-widest text-white shadow-xl shadow-orange-500/10 active:scale-95 inline-block text-center">
-          Empezar
+          Reservar Auditoría
         </a>
       </div>
     </nav>
@@ -289,16 +268,13 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center sm:items-stretch mb-20">
           <Reveal delay={700} direction="up" className="w-full sm:w-auto">
             <a href="mailto:pixel@pixelyellow.com" className="gradient-bg btn-shine w-full sm:w-auto px-12 py-5 rounded-[1.2rem] font-black text-lg flex items-center justify-center gap-3 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/40 transition-all active:scale-95 group text-white text-center">
-              Empieza Ahora <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              Reservar Auditoría <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </a>
           </Reveal>
         </div>
 
-        {/* Growth Graphic replaces stats */}
-        <Reveal delay={900} direction="up">
-          <div className="mt-12">
-            <GrowthVisualization />
-          </div>
+        <Reveal delay={900} direction="none" className="w-full">
+          <AnimatedSeparator />
         </Reveal>
       </div>
     </section>
@@ -337,10 +313,10 @@ const DemoSection = () => {
             ) : (
               <iframe 
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0" 
-                title="Impact Video"
+                src="https://www.youtube.com/embed/lRTtMcx6HXY?autoplay=1&mute=1&controls=1&rel=0" 
+                title="Suite Impulso Impact Video"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               ></iframe>
             )}
