@@ -430,11 +430,29 @@ const Reveal = ({ children, delay = 0, className = "", direction = "up" }: {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const currentRef = ref.current;
+    
+    // Si ya está visible en el viewport al montar, activamos de inmediato
+    if (currentRef) {
+      const rect = currentRef.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) {
+        setIsVisible(true);
+        return;
+      }
+    }
+
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setIsVisible(true); observer.unobserve(entry.target); }
-    }, { threshold: 0.1 });
-    if (ref.current) observer.observe(ref.current);
-    return () => { if (ref.current) observer.unobserve(ref.current); };
+      if (entry.isIntersecting) { 
+        setIsVisible(true); 
+        if (currentRef) observer.unobserve(currentRef); 
+      }
+    }, { 
+      threshold: 0.01, // Umbral mínimo para detectar carga inmediata
+      rootMargin: "50px" 
+    });
+
+    if (currentRef) observer.observe(currentRef);
+    return () => { if (currentRef) observer.unobserve(currentRef); };
   }, []);
 
   const getTransform = () => {
@@ -667,37 +685,54 @@ const Testimonials = () => {
   const reviews = [
     { name: "Lucía Fernández", role: "CEO, GlowBeauty", content: "Incrementamos un 400% nuestras ventas orgánicas en solo 90 días con su visión estratégica.", img: "https://i.pravatar.cc/150?u=lucia" },
     { name: "Andrés Costa", role: "Socio, LegalTech", content: "Resultados tangibles desde el primer mes. Capturaron nuestra esencia a la perfección.", img: "https://i.pravatar.cc/150?u=andres" },
-    { name: "Sofía Méndez", role: "Marca Personal", content: "Delegar mi contenido en Suite Impulso ha sido mi mejor inversión este año.", img: "https://i.pravatar.cc/150?u=sofia" }
+    { name: "Sofía Méndez", role: "Marca Personal", content: "Delegar mi contenido en Suite Impulso ha sido mi mejor inversión este año.", img: "https://i.pravatar.cc/150?u=sofia" },
+    { name: "Carlos Ruiz", role: "Emprendedor", content: "La mejor decisión estratégica para mi marca. Calidad visual inigualable.", img: "https://i.pravatar.cc/150?u=carlos" },
+    { name: "Elena Sanz", role: "Directora Creativa", content: "Profesionalismo puro. Han elevado nuestra imagen a otro nivel.", img: "https://i.pravatar.cc/150?u=elena" }
   ];
 
   return (
-    <section id="testimonios" className="py-12 md:py-20 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
-      <div className="max-w-7xl mx-auto relative z-10">
+    <section id="testimonios" className="py-12 md:py-24 relative bg-white/[0.01] border-y border-white/5 section-highlight overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 relative z-10 mb-10">
         <SectionTitle subtitle="Éxito" title={<>Opiniones de <span className="text-orange-500">Impulso</span></>} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6 md:mt-10">
-          {reviews.map((r, i) => (
-            <Reveal key={i} delay={i * 100} direction="up">
-              <MobileActiveObserver>
-                <div className="glass-card p-8 h-full rounded-[3rem] flex flex-col group border-white/5">
-                  <div className="flex gap-1 mb-6">
-                    {[...Array(5)].map((_, idx) => (
-                      <Star key={idx} className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
-                    ))}
-                  </div>
-                  <p className="text-gray-300 font-medium italic mb-8 leading-relaxed text-base flex-grow">"{r.content}"</p>
-                  <div className="flex items-center gap-3 mt-auto border-t border-white/5 pt-5">
-                    <img src={r.img} alt={r.name} className="w-10 h-10 rounded-lg object-cover ring-1 ring-orange-500/20 mobile-active-scale transition-all" />
-                    <div>
-                      <h4 className="font-black text-white text-sm tracking-tight uppercase mobile-active-text">{r.name}</h4>
-                      <p className="text-[8px] text-orange-500 font-black uppercase tracking-[0.1em] mt-0.5">{r.role}</p>
-                    </div>
+      </div>
+
+      <div className="flex overflow-hidden select-none group">
+        <div className="flex whitespace-nowrap animate-marquee hover:[animation-play-state:paused]">
+          {[...reviews, ...reviews].map((r, i) => (
+            <div key={i} className="inline-block mx-4 min-w-[320px] md:min-w-[450px]">
+              <div className="glass-card p-6 md:p-8 rounded-[2.5rem] flex flex-col h-full border-white/5 whitespace-normal">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, idx) => (
+                    <Star key={idx} className="w-3 h-3 text-orange-500 fill-orange-500" />
+                  ))}
+                </div>
+                <p className="text-gray-300 font-medium italic mb-6 leading-relaxed text-sm md:text-base flex-grow">"{r.content}"</p>
+                <div className="flex items-center gap-3 pt-4 border-t border-white/5">
+                  <img src={r.img} alt={r.name} className="w-10 h-10 rounded-lg object-cover ring-1 ring-orange-500/20" />
+                  <div>
+                    <h4 className="font-black text-white text-xs tracking-tight uppercase">{r.name}</h4>
+                    <p className="text-[7px] text-orange-500 font-black uppercase tracking-[0.1em] mt-0.5">{r.role}</p>
                   </div>
                 </div>
-              </MobileActiveObserver>
-            </Reveal>
+              </div>
+            </div>
           ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes marquee-testimonials {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee-testimonials 40s linear infinite;
+        }
+      `}</style>
+
+      {/* Fade effects for the slider edge */}
+      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#030408] via-[#030408]/50 to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#030408] via-[#030408]/50 to-transparent z-10 pointer-events-none"></div>
     </section>
   );
 };
