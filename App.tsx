@@ -370,9 +370,9 @@ const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
           </div>
         </Reveal>
         <Reveal delay={50}>
-          <h1 className="text-6xl md:text-[10rem] font-black mb-8 leading-[0.8] tracking-[-0.04em] uppercase select-none">
-            <span className="text-outline block font-thin opacity-60">SUITE</span>
-            <span className="gradient-text drop-shadow-[0_10px_30px_rgba(249,115,22,0.3)] block font-black -mt-2 md:-mt-6">IMPULSO</span>
+          <h1 className="text-7xl md:text-[10rem] font-black mb-8 leading-[0.82] tracking-[-0.05em] uppercase select-none font-display">
+            <span className="text-outline block">SUITE</span>
+            <span className="gradient-text block -mt-2 md:-mt-6 drop-shadow-[0_20px_50px_rgba(249,115,22,0.4)]">IMPULSO</span>
           </h1>
         </Reveal>
         <Reveal delay={150}>
