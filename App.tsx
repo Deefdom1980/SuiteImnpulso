@@ -561,7 +561,7 @@ const DemoSection = () => {
   return (
     <section className="py-12 md:py-20 px-4 md:px-6 relative overflow-hidden section-highlight">
       <div className="max-w-6xl mx-auto relative z-10">
-        <SectionTitle title={<>Impacto Visual <span className="text-orange-500">Real</span></>} subtitle="Showcase" />
+        <SectionTitle title={<>Impacto Visual <span className="gradient-text">Real</span></>} subtitle="Showcase" />
         <Reveal delay={100} direction="none">
           <div className="glass-card rounded-[1.5rem] md:rounded-[3.5rem] p-2 md:p-5 overflow-hidden relative group border-white/10 shadow-xl aspect-video max-w-4xl mx-auto">
             <div className="relative w-full h-full rounded-[1rem] md:rounded-[2.5rem] overflow-hidden bg-black">
@@ -693,7 +693,7 @@ const Testimonials = () => {
   return (
     <section id="testimonios" className="py-12 md:py-24 relative bg-white/[0.01] border-y border-white/5 section-highlight overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10 mb-10">
-        <SectionTitle subtitle="Éxito" title={<>Opiniones de <span className="text-orange-500">Impulso</span></>} />
+        <SectionTitle subtitle="Éxito" title={<>Opiniones de <span className="gradient-text">Impulso</span></>} />
       </div>
 
       <div className="flex overflow-hidden select-none group">
