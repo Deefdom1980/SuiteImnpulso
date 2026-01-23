@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { 
   Video, 
   PenTool, 
@@ -656,6 +657,7 @@ const App: React.FC = () => {
         isOpen={isBookingOpen} 
         onClose={() => setIsBookingOpen(false)} 
       />
+      <SpeedInsights />
     </div>
   );
 };
