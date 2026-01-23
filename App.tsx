@@ -30,7 +30,8 @@ import {
   Car,
   Globe2,
   Landmark,
-  ArrowLeft
+  ArrowLeft,
+  Briefcase
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -369,25 +370,25 @@ const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
           </div>
         </Reveal>
         <Reveal delay={50}>
-          <h1 className="text-5xl md:text-[8rem] font-black mb-4 leading-[0.9] tracking-tighter uppercase select-none">
-            <span className="opacity-15">SUITE</span> <br />
-            <span className="gradient-text drop-shadow-lg inline-block mt-1">IMPULSO</span>
+          <h1 className="text-6xl md:text-[10rem] font-black mb-8 leading-[0.8] tracking-[-0.04em] uppercase select-none">
+            <span className="text-outline block font-thin opacity-60">SUITE</span>
+            <span className="gradient-text drop-shadow-[0_10px_30px_rgba(249,115,22,0.3)] block font-black -mt-2 md:-mt-6">IMPULSO</span>
           </h1>
         </Reveal>
         <Reveal delay={150}>
-          <p className="text-base md:text-xl text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
-            Ingeniería de contenido estratégica para <span className="text-white font-black underline decoration-orange-500 decoration-2 underline-offset-4">dominar tu mercado</span> y multiplicar tus ingresos exponencialmente.
+          <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium px-4">
+            Ingeniería de contenido estratégica para <span className="text-white font-black underline decoration-orange-500 decoration-2 underline-offset-8">dominar tu mercado</span> y multiplicar tus ingresos exponencialmente.
           </p>
         </Reveal>
         <Reveal delay={250} direction="none">
           <button 
             onClick={onOpenBooking}
-            className="gradient-bg btn-shine px-10 py-5 rounded-[1.5rem] font-black text-lg flex items-center gap-3 mx-auto hover:scale-105 transition-all shadow-xl text-white group"
+            className="gradient-bg btn-shine px-12 py-6 rounded-[2rem] font-black text-lg flex items-center gap-4 mx-auto hover:scale-105 active:scale-95 transition-all shadow-2xl text-white group"
           >
             Reservar Auditoría <ArrowRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
           </button>
         </Reveal>
-        <Reveal delay={400} direction="none" className="w-full mt-12">
+        <Reveal delay={400} direction="none" className="w-full mt-12 opacity-50">
           <AnimatedSeparator />
         </Reveal>
       </div>
@@ -399,7 +400,7 @@ const DemoSection = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-16 px-4 md:px-6 relative overflow-hidden section-highlight section-glow-purple">
+    <section className="py-16 px-4 md:px-6 relative overflow-hidden section-highlight">
       <div className="max-w-6xl mx-auto relative z-10">
         <SectionTitle title={<>Impacto Visual <span className="text-orange-500">Real</span></>} />
         <Reveal delay={100} direction="none">
@@ -446,7 +447,7 @@ const Process = () => {
   ];
 
   return (
-    <section id="proceso" className="py-16 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight section-glow-orange">
+    <section id="proceso" className="py-16 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionTitle subtitle="Metodología" title={<>Estrategia en <span className="gradient-text">4 Pasos</span></>} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
@@ -480,7 +481,7 @@ const Services = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   ];
 
   return (
-    <section id="servicios" className="py-16 px-6 relative section-highlight section-glow-purple">
+    <section id="servicios" className="py-16 px-6 relative section-highlight">
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionTitle subtitle="Servicios" title={<>Ingeniería de <span className="gradient-text">Valor</span></>} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
@@ -513,7 +514,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <section id="testimonios" className="py-16 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight section-glow-orange">
+    <section id="testimonios" className="py-16 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionTitle subtitle="Éxito" title={<>Opiniones de <span className="text-orange-500">Impulso</span></>} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
@@ -543,30 +544,55 @@ const Testimonials = () => {
 };
 
 const ClientsSection = () => {
-  const clients = [
-    { name: "Guaguas", icon: <Bus className="w-5 h-5" /> },
+  const row1 = [
+    { name: "Guaguas Municipales", icon: <Bus className="w-5 h-5" /> },
     { name: "Hiperdino", icon: <ShoppingBag className="w-5 h-5" /> },
+    { name: "Auditorio y Teatro LPGC", icon: <Music className="w-5 h-5" /> },
+    { name: "Base:", icon: <ShoppingBag className="w-5 h-5" /> },
     { name: "Toyota", icon: <Car className="w-5 h-5" /> },
-    { name: "Casa África", icon: <Globe2 className="w-5 h-5" /> },
-    { name: "Gobierno", icon: <Landmark className="w-5 h-5" /> },
-    { name: "Auditorio", icon: <Music className="w-5 h-5" /> }
+    { name: "Fundación Acuorum", icon: <Globe className="w-5 h-5" /> },
+    { name: "Casa África", icon: <Globe2 className="w-5 h-5" /> }
+  ];
+
+  const row2 = [
+    { name: "Gobierno de Canarias", icon: <Landmark className="w-5 h-5" /> },
+    { name: "Cabildo de Gran Canaria", icon: <Landmark className="w-5 h-5" /> },
+    { name: "Cabildo de Lanzarote", icon: <Landmark className="w-5 h-5" /> },
+    { name: "Ayuntamiento de LPGC", icon: <Building2 className="w-5 h-5" /> },
+    { name: "Ayuntamiento de Telde", icon: <Building2 className="w-5 h-5" /> },
+    { name: "Ayuntamiento de Puerto del Rosario", icon: <Building2 className="w-5 h-5" /> },
+    { name: "Agencias y productoras", icon: <Briefcase className="w-5 h-5" /> }
   ];
 
   return (
-    <section className="py-12 relative overflow-hidden bg-[#030408] border-b border-white/5">
+    <section className="py-16 relative overflow-hidden bg-[#030408] border-b border-white/5 space-y-6">
       <div className="flex overflow-hidden select-none group">
         <div className="flex whitespace-nowrap animate-marquee">
-          {[...clients, ...clients, ...clients].map((client, i) => (
-            <div key={i} className="flex items-center gap-4 mx-10 px-6 py-3 glass-card rounded-xl border-white/5 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-default">
+          {[...row1, ...row1, ...row1].map((client, i) => (
+            <div key={i} className="flex items-center gap-4 mx-6 px-6 py-4 glass-card rounded-2xl border-white/5 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-default">
               <div className="text-orange-500">{client.icon}</div>
-              <span className="text-lg font-black tracking-tighter uppercase text-white">{client.name}</span>
+              <span className="text-base font-black tracking-tighter uppercase text-white">{client.name}</span>
             </div>
           ))}
         </div>
       </div>
+      
+      <div className="flex overflow-hidden select-none group">
+        <div className="flex whitespace-nowrap animate-marquee-reverse">
+          {[...row2, ...row2, ...row2].map((client, i) => (
+            <div key={i} className="flex items-center gap-4 mx-6 px-6 py-4 glass-card rounded-2xl border-white/5 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-default">
+              <div className="text-orange-500">{client.icon}</div>
+              <span className="text-base font-black tracking-tighter uppercase text-white">{client.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-33.33%); } }
-        .animate-marquee { animation: marquee 40s linear infinite; }
+        @keyframes marquee-reverse { 0% { transform: translateX(-33.33%); } 100% { transform: translateX(0); } }
+        .animate-marquee { animation: marquee 50s linear infinite; }
+        .animate-marquee-reverse { animation: marquee-reverse 60s linear infinite; }
       `}</style>
       <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#030408] via-[#030408]/80 to-transparent z-10 pointer-events-none"></div>
       <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#030408] via-[#030408]/80 to-transparent z-10 pointer-events-none"></div>
@@ -576,7 +602,7 @@ const ClientsSection = () => {
 
 const CTASection = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   return (
-    <section id="contacto" className="py-20 px-6 relative overflow-hidden section-highlight section-glow-orange">
+    <section id="contacto" className="py-20 px-6 relative overflow-hidden section-highlight">
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         <Reveal direction="up">
           <div className="glass-card rounded-[3rem] p-10 md:p-16 border-white/10 relative overflow-hidden group">
