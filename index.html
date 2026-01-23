@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
   <head>
@@ -7,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap&font-display=swap" rel="stylesheet">
     <style>
       body {
         font-family: 'Inter', sans-serif;
@@ -17,28 +18,25 @@
       }
       
       .bg-grid-lines {
-        background-size: 60px 60px;
+        background-size: 80px 80px;
         background-image: 
-          linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+          linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
       }
 
-      .bg-grid-dots {
-        background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-        background-size: 20px 20px;
-      }
-
+      /* Filtro de ruido optimizado para menor consumo de CPU */
       .bg-noise {
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        filter: contrast(120%) brightness(100%);
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.04;
+        mix-blend-mode: overlay;
       }
 
       .grid-mask {
-        mask-image: radial-gradient(circle at center, black 20%, transparent 90%);
+        mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
       }
 
       .gradient-text {
-        background: linear-gradient(to right, #f97316, #a855f7);
+        background: linear-gradient(135deg, #fff 20%, #f97316 60%, #a855f7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
@@ -46,25 +44,26 @@
       .gradient-bg {
         background: linear-gradient(135deg, #f97316, #a855f7);
         background-size: 200% 200%;
-        transition: background-position 0.5s ease;
-      }
-      
-      .gradient-bg:hover {
-        background-position: right center;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
       .glass-card {
-        background: rgba(255, 255, 255, 0.02);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 
+          inset 0 1px 1px rgba(255,255,255,0.05),
+          0 20px 40px -10px rgba(0,0,0,0.8);
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       }
       
       .glass-card:hover {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(249, 115, 22, 0.3);
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(249, 115, 22, 0.05);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(249, 115, 22, 0.5);
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 
+          inset 0 1px 2px rgba(255,255,255,0.1),
+          0 40px 80px -15px rgba(249, 115, 22, 0.2);
       }
       
       @keyframes shine {
@@ -84,29 +83,50 @@
         left: 0;
         width: 50%;
         height: 100%;
-        background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
         transform: skewX(-15deg);
-        transition: 0.5s;
         pointer-events: none;
       }
       
       .btn-shine:hover::after {
-        animation: shine 0.8s forwards;
-      }
-
-      @keyframes pulse-glow {
-        0%, 100% { opacity: 0.2; transform: scale(1) translate(0, 0); }
-        50% { opacity: 0.4; transform: scale(1.15) translate(2%, 1%); }
+        animation: shine 0.9s forwards;
       }
 
       .animate-glow {
-        animation: pulse-glow 12s ease-in-out infinite;
+        animation: pulse-glow 15s ease-in-out infinite;
       }
 
-      @keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-15px) rotate(5deg); }
+      @keyframes pulse-glow {
+        0%, 100% { opacity: 0.12; transform: scale(1) translate(0, 0); }
+        50% { opacity: 0.3; transform: scale(1.2) translate(5%, 3%); }
       }
+
+      .section-highlight {
+        position: relative;
+        z-index: 1;
+      }
+      
+      .section-glow-orange::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.04) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
+      }
+      
+      .section-glow-purple::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.04) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.5); border-radius: 10px; }
     </style>
   <script type="importmap">
 {
