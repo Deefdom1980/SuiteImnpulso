@@ -31,7 +31,10 @@ import {
   Globe2,
   Landmark,
   ArrowLeft,
-  Briefcase
+  Briefcase,
+  ShieldCheck,
+  FileText,
+  Cookie
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -44,6 +47,32 @@ const useScrollY = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return scrollY;
+};
+
+// --- Mobile Active Component ---
+const MobileActiveObserver = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
+  const [isActive, setIsActive] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!window.matchMedia("(max-width: 1024px)").matches) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsActive(entry.isIntersecting);
+    }, { 
+      rootMargin: "-30% 0% -30% 0%",
+      threshold: 0 
+    });
+
+    if (ref.current) observer.observe(ref.current);
+    return () => { if (ref.current) observer.unobserve(ref.current); };
+  }, []);
+
+  return (
+    <div ref={ref} className={`${className} ${isActive ? 'mobile-active' : ''}`}>
+      {children}
+    </div>
+  );
 };
 
 // --- Background Component ---
@@ -99,6 +128,120 @@ const AnimatedSeparator = () => (
     <div className="flex-1 h-[1px] bg-gradient-to-r from-orange-500/40 via-orange-500/5 to-transparent"></div>
   </div>
 );
+
+// --- Branding Helper ---
+const PixelYellowLogo = () => (
+  <div className="flex items-center gap-2 ml-10 -mt-1 group">
+    <span className="text-[7.5px] font-black text-gray-500 uppercase tracking-[0.3em]">by Pixel Yellow</span>
+    <div className="w-2 h-2 bg-[#FFD700] rounded-[1px] shadow-[0_0_8px_rgba(255,215,0,0.6)] group-hover:scale-110 transition-transform"></div>
+  </div>
+);
+
+const SuiteLogo = ({ className = "text-xl" }: { className?: string }) => (
+  <span className={`${className} font-black tracking-tighter uppercase gradient-text`}>
+    SUITE IMPULSO
+  </span>
+);
+
+// --- Legal Modal Component ---
+
+type LegalType = 'privacy' | 'terms' | 'cookies';
+
+const LegalModal = ({ isOpen, onClose, type }: { isOpen: boolean, onClose: () => void, type: LegalType }) => {
+  if (!isOpen) return null;
+
+  const content = {
+    privacy: {
+      title: 'Política de Privacidad',
+      icon: <ShieldCheck className="w-6 h-6 text-orange-500" />,
+      text: (
+        <div className="space-y-6 text-gray-400 text-sm leading-relaxed">
+          <p>En SUITE IMPULSO (by Pixel Yellow), nos tomamos muy en serio la seguridad de tu información. Cumplimos estrictamente con el Reglamento General de Protección de Datos (RGPD).</p>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">1. Recogida de Datos</h4>
+            <p>Solo solicitamos los datos necesarios para gestionar tu auditoría estratégica: nombre, email, teléfono y datos de tu empresa.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">2. Finalidad</h4>
+            <p>Tus datos se utilizan exclusivamente para contactar contigo tras la solicitud de auditoría y para enviarte comunicaciones relacionadas con el servicio de la Suite.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">3. No compartimos tus datos</h4>
+            <p>Bajo ninguna circunstancia vendemos o cedemos tus datos a terceros con fines comerciales. Tu confianza es nuestra prioridad.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">4. Tus Derechos</h4>
+            <p>Puedes solicitar el acceso, rectificación o eliminación de tus datos en cualquier momento enviando un mensaje a nuestro equipo de soporte.</p>
+          </section>
+        </div>
+      )
+    },
+    terms: {
+      title: 'Términos y Condiciones',
+      icon: <FileText className="w-6 h-6 text-orange-500" />,
+      text: (
+        <div className="space-y-6 text-gray-400 text-sm leading-relaxed">
+          <p>Al acceder y utilizar la web de SUITE IMPULSO, aceptas quedar vinculado por estos términos legales.</p>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">1. Propiedad Intelectual</h4>
+            <p>Todo el contenido, diseño y metodologías expuestas en esta web son propiedad exclusiva de Pixel Yellow. Queda prohibida su reproducción total o parcial sin consentimiento previo.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">2. Disponibilidad del Servicio</h4>
+            <p>La reserva de una auditoría no garantiza la ejecución inmediata del servicio, la cual queda sujeta a la disponibilidad del equipo estratégico de la Suite.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">3. Limitación de Responsabilidad</h4>
+            <p>SUITE IMPULSO no se hace responsable de las decisiones de negocio tomadas por los clientes basándose en el contenido gratuito ofrecido en esta web hasta que se formalice un contrato de consultoría.</p>
+          </section>
+        </div>
+      )
+    },
+    cookies: {
+      title: 'Política de Cookies',
+      icon: <Cookie className="w-6 h-6 text-orange-500" />,
+      text: (
+        <div className="space-y-6 text-gray-400 text-sm leading-relaxed">
+          <p>Este sitio web utiliza cookies para mejorar tu experiencia de navegación y analizar nuestro tráfico.</p>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">1. Cookies Técnicas</h4>
+            <p>Son esenciales para que la web funcione correctamente, permitiéndote navegar por las secciones y utilizar el sistema de reservas.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">2. Cookies de Análisis</h4>
+            <p>Utilizamos herramientas como Vercel Speed Insights para entender cómo interactúas con la Suite y así poder optimizar su rendimiento.</p>
+          </section>
+          <section className="space-y-2">
+            <h4 className="text-white font-black uppercase tracking-widest text-[10px]">3. Gestión de Cookies</h4>
+            <p>Puedes configurar tu navegador para bloquear o alertarte sobre estas cookies, pero algunas partes del sitio podrían no funcionar correctamente.</p>
+          </section>
+        </div>
+      )
+    }
+  };
+
+  const activeContent = content[type];
+
+  return (
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={onClose}></div>
+      <div className="glass-card w-full max-w-2xl max-h-[80vh] rounded-[2.5rem] border-white/10 relative z-10 overflow-hidden flex flex-col">
+        <div className="p-8 border-b border-white/5 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {activeContent.icon}
+            <h3 className="text-xl font-black uppercase tracking-tighter">{activeContent.title}</h3>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-500 hover:text-white">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          {activeContent.text}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --- Booking Modal Component ---
 
@@ -317,7 +460,7 @@ const Reveal = ({ children, delay = 0, className = "", direction = "up" }: {
 // --- Helper Components ---
 
 const SectionTitle = ({ subtitle, title, centered = true }: { subtitle?: string, title: React.ReactNode, centered?: boolean }) => (
-  <div className={`mb-10 ${centered ? 'text-center' : ''}`}>
+  <div className={`mb-8 md:mb-12 ${centered ? 'text-center' : ''}`}>
     {subtitle && (
       <Reveal delay={50}>
         <span className="text-orange-500 font-black text-[10px] uppercase tracking-[0.5em] block mb-2">{subtitle}</span>
@@ -343,15 +486,15 @@ const Navbar = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
             <div className="gradient-bg p-1.5 rounded-lg shadow-lg shadow-orange-500/10">
               <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-xl font-black tracking-tighter uppercase">SUITE <span className="text-orange-500">IMPULSO</span></span>
+            <SuiteLogo className="text-xl" />
           </div>
-          <span className="text-[7px] font-black text-gray-500 uppercase tracking-[0.3em] ml-10 -mt-1">by Pixel Yellow</span>
+          <PixelYellowLogo />
         </div>
         <button 
           onClick={onOpenBooking}
           className={`gradient-bg px-6 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest text-white active:scale-95 btn-shine transition-all duration-500 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
         >
-          Auditoría
+          AGENDAR
         </button>
       </div>
     </nav>
@@ -360,24 +503,22 @@ const Navbar = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
 
 const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   return (
-    <section className="relative pt-32 pb-12 px-6 min-h-[85vh] flex items-center justify-center overflow-hidden">
+    <section className="relative pt-24 md:pt-32 pb-12 px-6 min-h-[80vh] md:min-h-[85vh] flex items-center justify-center overflow-hidden">
       <FloatingDecor icon={Sparkles} top="15%" left="15%" delay="0s" size={32} />
-      <div className="max-w-6xl mx-auto text-center relative z-10">
-        <Reveal delay={0}>
-          <div className="inline-flex items-center gap-3 glass-card px-6 py-1.5 rounded-full mb-6 border-white/5">
-            <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse shadow-[0_0_10px_rgba(249,115,22,1)]"></div>
-            <span className="text-[9px] font-black text-orange-100 tracking-[0.2em] uppercase">Contenido que Convierte</span>
-          </div>
-        </Reveal>
+      <div className="max-w-7xl mx-auto text-center relative z-10 w-full">
         <Reveal delay={50}>
-          <h1 className="text-7xl md:text-[10rem] font-black mb-8 leading-[0.82] tracking-[-0.05em] uppercase select-none font-display">
-            <span className="text-outline block">SUITE</span>
-            <span className="gradient-text block -mt-2 md:-mt-6 drop-shadow-[0_20px_50px_rgba(249,115,22,0.4)]">IMPULSO</span>
+          <h1 className="flex flex-col items-center justify-center font-display mb-10 relative">
+            <span className="text-5xl sm:text-7xl md:text-[7.5rem] font-thin text-outline tracking-[0.2em] leading-none opacity-60">
+              SUITE
+            </span>
+            <span className="text-6xl sm:text-8xl md:text-[11rem] lg:text-[12.5rem] font-black gradient-text leading-[0.8] tracking-[-0.04em] -mt-2 md:-mt-8 drop-shadow-[0_25px_60px_rgba(249,115,22,0.4)] uppercase">
+              IMPULSO
+            </span>
           </h1>
         </Reveal>
         <Reveal delay={150}>
           <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-medium px-4">
-            Ingeniería de contenido estratégica para <span className="text-white font-black underline decoration-orange-500 decoration-2 underline-offset-8">dominar tu mercado</span> y multiplicar tus ingresos exponencialmente.
+            Contenido estratégico de alto valor para potenciar <span className="text-white font-black underline decoration-orange-500 decoration-2 underline-offset-[12px]">tu negocio</span>
           </p>
         </Reveal>
         <Reveal delay={250} direction="none">
@@ -385,10 +526,10 @@ const Hero = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
             onClick={onOpenBooking}
             className="gradient-bg btn-shine px-12 py-6 rounded-[2rem] font-black text-lg flex items-center gap-4 mx-auto hover:scale-105 active:scale-95 transition-all shadow-2xl text-white group"
           >
-            Reservar Auditoría <ArrowRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
+            Agendar Auditoría <ArrowRight className="w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
           </button>
         </Reveal>
-        <Reveal delay={400} direction="none" className="w-full mt-12 opacity-50">
+        <Reveal delay={400} direction="none" className="w-full mt-12 opacity-40">
           <AnimatedSeparator />
         </Reveal>
       </div>
@@ -400,9 +541,9 @@ const DemoSection = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section className="py-16 px-4 md:px-6 relative overflow-hidden section-highlight">
+    <section className="py-12 md:py-20 px-4 md:px-6 relative overflow-hidden section-highlight">
       <div className="max-w-6xl mx-auto relative z-10">
-        <SectionTitle title={<>Impacto Visual <span className="text-orange-500">Real</span></>} />
+        <SectionTitle title={<>Impacto Visual <span className="text-orange-500">Real</span></>} subtitle="Showcase" />
         <Reveal delay={100} direction="none">
           <div className="glass-card rounded-[1.5rem] md:rounded-[3.5rem] p-2 md:p-5 overflow-hidden relative group border-white/10 shadow-xl aspect-video max-w-4xl mx-auto">
             <div className="relative w-full h-full rounded-[1rem] md:rounded-[2.5rem] overflow-hidden bg-black">
@@ -447,21 +588,38 @@ const Process = () => {
   ];
 
   return (
-    <section id="proceso" className="py-16 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
+    <section id="proceso" className="py-12 md:py-24 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionTitle subtitle="Metodología" title={<>Estrategia en <span className="gradient-text">4 Pasos</span></>} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-10 md:mt-16">
           {steps.map((s, i) => (
             <Reveal key={i} delay={i * 100} direction="up">
-              <div className="glass-card relative p-8 h-full rounded-[2.5rem] group border-white/5">
-                <div className="absolute -top-4 -left-4 text-[6rem] font-black text-white/[0.02] select-none pointer-events-none group-hover:text-orange-500/5 transition-all leading-none">{s.id}</div>
-                <div className="w-12 h-12 bg-orange-500/10 border border-orange-500/10 rounded-xl flex items-center justify-center mb-6 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
-                  {React.cloneElement(s.icon as React.ReactElement, { className: "w-5 h-5" })}
+              <MobileActiveObserver>
+                <div className="relative group h-full">
+                  <div className="absolute -inset-[1px] rounded-[2.5rem] bg-gradient-to-br from-white/10 via-transparent to-white/5 group-hover:from-orange-500/50 group-hover:to-purple-500/50 transition-all duration-700"></div>
+                  
+                  <div className="relative glass-card p-8 h-full rounded-[2.5rem] bg-[#030408]/80 backdrop-blur-3xl flex flex-col items-center text-center group-hover:bg-[#05060a] transition-all duration-500">
+                    <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-orange-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    
+                    <span className="text-4xl font-black mb-6 block gradient-text opacity-40 group-hover:opacity-100 transition-all duration-500 tracking-tighter">
+                      {s.id}
+                    </span>
+                    
+                    <div className="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-6 text-orange-500 group-hover:scale-110 group-hover:border-orange-500/30 transition-all duration-500 relative shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                      {React.cloneElement(s.icon as React.ReactElement<{ className?: string }>, { className: "w-6 h-6 drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]" })}
+                    </div>
+                    
+                    <h3 className="text-xl font-black mb-3 tracking-tight uppercase leading-tight text-white group-hover:text-orange-500 transition-colors duration-500">
+                      {s.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm font-medium leading-relaxed group-hover:text-gray-300 transition-colors duration-500 px-2">
+                      {s.desc}
+                    </p>
+                    
+                    <div className="mt-8 w-8 h-[2px] bg-gradient-to-r from-orange-500 to-purple-500 rounded-full group-hover:w-full transition-all duration-1000"></div>
+                  </div>
                 </div>
-                <h3 className="text-lg font-black mb-2 tracking-tight uppercase leading-tight">{s.title}</h3>
-                <p className="text-gray-400 text-xs font-medium leading-relaxed group-hover:text-gray-200 transition-colors">{s.desc}</p>
-                <div className="h-0.5 w-0 bg-gradient-to-r from-orange-500 to-purple-600 mt-6 group-hover:w-full transition-all duration-500 rounded-full"></div>
-              </div>
+              </MobileActiveObserver>
             </Reveal>
           ))}
         </div>
@@ -481,23 +639,22 @@ const Services = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   ];
 
   return (
-    <section id="servicios" className="py-16 px-6 relative section-highlight">
+    <section id="servicios" className="py-12 md:py-20 px-6 relative section-highlight">
       <div className="max-w-7xl mx-auto relative z-10">
-        <SectionTitle subtitle="Servicios" title={<>Ingeniería de <span className="gradient-text">Valor</span></>} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
+        <SectionTitle subtitle="Servicios" title={<>Incluido en la <span className="gradient-text">Suite</span></>} />
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 mt-6 md:mt-10">
           {services.map((s, i) => (
             <Reveal key={i} delay={i * 50} direction="up">
-              <div className="glass-card p-8 h-full rounded-[2.5rem] group relative overflow-hidden border-white/5">
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${s.accent} to-transparent blur-[60px] opacity-20`}></div>
-                <div className="bg-white/5 w-12 h-12 rounded-xl flex items-center justify-center mb-6 border border-white/5 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
-                  {React.cloneElement(s.icon as React.ReactElement, { className: "w-5 h-5" })}
+              <MobileActiveObserver>
+                <div className="glass-card p-5 md:p-8 h-full rounded-[2rem] md:rounded-[2.5rem] group relative overflow-hidden border-white/5">
+                  <div className={`absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br ${s.accent} to-transparent blur-[40px] md:blur-[60px] opacity-20`}></div>
+                  <div className="bg-white/5 w-10 h-10 md:w-12 md:h-12 rounded-lg md:rounded-xl flex items-center justify-center mb-4 md:mb-6 border border-white/5 text-orange-500 group-hover:bg-orange-500 group-hover:text-white mobile-active-bg transition-all">
+                    {React.cloneElement(s.icon as React.ReactElement<{ className?: string }>, { className: "w-4 h-4 md:w-5 md:h-5" })}
+                  </div>
+                  <h3 className="text-sm md:text-lg font-black mb-1 md:mb-2 tracking-tight uppercase leading-tight mobile-active-text">{s.title}</h3>
+                  <p className="text-gray-400 text-[10px] md:text-xs leading-relaxed font-medium group-hover:text-gray-200 transition-colors line-clamp-2 md:line-clamp-none">{s.desc}</p>
                 </div>
-                <h3 className="text-lg font-black mb-2 tracking-tight uppercase leading-tight">{s.title}</h3>
-                <p className="text-gray-400 text-xs leading-relaxed font-medium group-hover:text-gray-200 transition-colors">{s.desc}</p>
-                <div className="mt-5 flex items-center gap-2 text-orange-500 font-black text-[9px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all">
-                  Saber más <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
+              </MobileActiveObserver>
             </Reveal>
           ))}
         </div>
@@ -514,27 +671,29 @@ const Testimonials = () => {
   ];
 
   return (
-    <section id="testimonios" className="py-16 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
+    <section id="testimonios" className="py-12 md:py-20 px-6 relative bg-white/[0.01] border-y border-white/5 section-highlight">
       <div className="max-w-7xl mx-auto relative z-10">
         <SectionTitle subtitle="Éxito" title={<>Opiniones de <span className="text-orange-500">Impulso</span></>} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6 md:mt-10">
           {reviews.map((r, i) => (
             <Reveal key={i} delay={i * 100} direction="up">
-              <div className="glass-card p-8 h-full rounded-[3rem] flex flex-col group border-white/5">
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, idx) => (
-                    <Star key={idx} className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
-                  ))}
-                </div>
-                <p className="text-gray-300 font-medium italic mb-8 leading-relaxed text-base flex-grow">"{r.content}"</p>
-                <div className="flex items-center gap-3 mt-auto border-t border-white/5 pt-5">
-                  <img src={r.img} alt={r.name} className="w-10 h-10 rounded-lg object-cover ring-1 ring-orange-500/20" />
-                  <div>
-                    <h4 className="font-black text-white text-sm tracking-tight uppercase">{r.name}</h4>
-                    <p className="text-[8px] text-orange-500 font-black uppercase tracking-[0.1em] mt-0.5">{r.role}</p>
+              <MobileActiveObserver>
+                <div className="glass-card p-8 h-full rounded-[3rem] flex flex-col group border-white/5">
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star key={idx} className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 font-medium italic mb-8 leading-relaxed text-base flex-grow">"{r.content}"</p>
+                  <div className="flex items-center gap-3 mt-auto border-t border-white/5 pt-5">
+                    <img src={r.img} alt={r.name} className="w-10 h-10 rounded-lg object-cover ring-1 ring-orange-500/20 mobile-active-scale transition-all" />
+                    <div>
+                      <h4 className="font-black text-white text-sm tracking-tight uppercase mobile-active-text">{r.name}</h4>
+                      <p className="text-[8px] text-orange-500 font-black uppercase tracking-[0.1em] mt-0.5">{r.role}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </MobileActiveObserver>
             </Reveal>
           ))}
         </div>
@@ -565,7 +724,10 @@ const ClientsSection = () => {
   ];
 
   return (
-    <section className="py-16 relative overflow-hidden bg-[#030408] border-b border-white/5 space-y-6">
+    <section className="py-12 md:py-16 relative overflow-hidden bg-[#030408] border-b border-white/5 space-y-6">
+      <div className="max-w-7xl mx-auto px-6 mb-4 text-center">
+        <span className="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em]">confían en nosotros</span>
+      </div>
       <div className="flex overflow-hidden select-none group">
         <div className="flex whitespace-nowrap animate-marquee">
           {[...row1, ...row1, ...row1].map((client, i) => (
@@ -602,20 +764,19 @@ const ClientsSection = () => {
 
 const CTASection = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   return (
-    <section id="contacto" className="py-20 px-6 relative overflow-hidden section-highlight">
+    <section id="contacto" className="py-16 md:py-24 px-6 relative overflow-hidden section-highlight">
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         <Reveal direction="up">
           <div className="glass-card rounded-[3rem] p-10 md:p-16 border-white/10 relative overflow-hidden group">
             <h2 className="text-3xl md:text-5xl font-black mb-8 leading-tight tracking-tighter uppercase relative z-10">
-              Transforma tu <br /> <span className="gradient-text transform -rotate-1 inline-block">CONTENIDO</span>
+              Impulsa tu <br /> <span className="gradient-text transform -rotate-1 inline-block">NEGOCIO</span>
             </h2>
             <button 
               onClick={onOpenBooking}
               className="gradient-bg btn-shine px-10 py-5 rounded-[1.5rem] font-black text-lg flex items-center gap-4 mx-auto hover:scale-105 transition-all shadow-xl text-white relative z-10"
             >
-              Auditoría Gratis <ArrowRight className="w-6 h-6" />
+              Agendar Auditoría <ArrowRight className="w-6 h-6" />
             </button>
-            <p className="mt-5 text-gray-500 font-bold uppercase tracking-[0.3em] text-[8px]">Plazas Limitadas</p>
           </div>
         </Reveal>
       </div>
@@ -623,25 +784,26 @@ const CTASection = ({ onOpenBooking }: { onOpenBooking: () => void }) => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ onOpenLegal }: { onOpenLegal: (type: LegalType) => void }) => {
   return (
-    <footer className="pt-16 pb-8 px-8 border-t border-white/5 bg-transparent relative z-10">
+    <footer className="pt-12 md:pt-16 pb-8 px-8 border-t border-white/5 bg-transparent relative z-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <div className="flex items-center gap-3 mb-4 group cursor-default">
-            <div className="gradient-bg p-1.5 rounded-lg">
-              <Zap className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-2.5 mb-1 group cursor-default">
+            <div className="gradient-bg p-1.5 rounded-lg shadow-lg shadow-orange-500/10">
+              <Zap className="w-4 h-4 text-white" />
             </div>
-            <span className="text-xl font-black tracking-tighter uppercase">SUITE <span className="text-orange-500">IMPULSO</span></span>
+            <SuiteLogo className="text-xl" />
           </div>
-          <p className="text-gray-500 text-[10px] font-medium max-w-sm leading-relaxed">Ingeniería estratégica de alto impacto. Transforma tu facturación hoy.</p>
+          <PixelYellowLogo />
+          <p className="text-gray-500 text-[10px] font-medium max-w-sm leading-relaxed mt-4">Gestión de contenido de alto valor para potenciar tu negocio.</p>
         </div>
-        <div className="flex flex-col md:flex-row gap-8 text-[8px] font-black uppercase tracking-[0.3em] text-gray-500">
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-all">Privacidad</a>
-            <a href="#" className="hover:text-white transition-all">Términos</a>
+        <div className="flex flex-col gap-6 text-[8px] font-black uppercase tracking-[0.3em] text-gray-500 items-center md:items-end">
+          <div className="flex gap-8">
+            <button onClick={() => onOpenLegal('privacy')} className="hover:text-white transition-all uppercase tracking-[0.2em]">Privacidad</button>
+            <button onClick={() => onOpenLegal('terms')} className="hover:text-white transition-all uppercase tracking-[0.2em]">Términos</button>
+            <button onClick={() => onOpenLegal('cookies')} className="hover:text-white transition-all uppercase tracking-[0.2em]">Cookies</button>
           </div>
-          <a href="mailto:pixel@pixelyellow.com" className="bg-white/5 px-5 py-2.5 rounded-full border border-white/5 hover:text-orange-500 transition-all text-center">pixel@pixelyellow.com</a>
         </div>
       </div>
       <div className="max-w-7xl mx-auto mt-12 pt-5 border-t border-white/5 text-center text-[7px] font-bold text-gray-600 uppercase tracking-[0.2em]">
@@ -653,9 +815,13 @@ const Footer = () => {
 
 const App: React.FC = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [legalModal, setLegalModal] = useState<{ open: boolean, type: LegalType }>({ open: false, type: 'privacy' });
   const scrollY = useScrollY();
   const showScroll = scrollY > 600;
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const openLegal = (type: LegalType) => setLegalModal({ open: true, type });
+  const closeLegal = () => setLegalModal(prev => ({ ...prev, open: false }));
 
   return (
     <div className="relative min-h-screen selection:bg-orange-500/30 selection:text-white">
@@ -670,7 +836,7 @@ const App: React.FC = () => {
         <ClientsSection />
         <CTASection onOpenBooking={() => setIsBookingOpen(true)} />
       </main>
-      <Footer />
+      <Footer onOpenLegal={openLegal} />
       
       <button 
         onClick={scrollToTop}
@@ -683,6 +849,13 @@ const App: React.FC = () => {
         isOpen={isBookingOpen} 
         onClose={() => setIsBookingOpen(false)} 
       />
+
+      <LegalModal 
+        isOpen={legalModal.open} 
+        onClose={closeLegal} 
+        type={legalModal.type} 
+      />
+
       <SpeedInsights />
     </div>
   );
